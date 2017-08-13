@@ -1,2 +1,3 @@
 # sp2017grp7
-Studio Project 2017 repo
+
+For d studio project so we can not fail 
