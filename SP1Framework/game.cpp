@@ -106,7 +106,7 @@ void update(double dt)
 
     switch (g_eGameState)
     {
-        case S_SPLASHSCREEN : splashScreenWait(); // game logic for the splash screen
+        case S_SPLASHSCREEN : splashScreenSelect(); // game logic for the splash screen
             break;
         case S_GAME: gameplay(); // gameplay logic when we are in the game
             break;
@@ -134,17 +134,19 @@ void render()
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
 
-void splashScreenWait()    // waits for time to pass in splash screen
+void splashScreenWait() {
+	//if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
+	// g_eGameState = S_GAME;
+}
+
+void splashScreenSelect()    // waits for time to pass in splash screen
 {
-    //if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
-       // g_eGameState = S_GAME;
 	if (g_abKeyPressed[K_ONE]) {
 		g_eGameState = S_GAME;
 	}
 	else if (g_abKeyPressed[K_TWO]) {
 		g_eGameState = S_GAME;
 	}
-
 }
 
 void gameplay()            // gameplay logic
@@ -208,14 +210,13 @@ void processUserInput()
 void clearScreen()
 {
     // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x1F);
+    g_Console.clearBuffer(0x0F);
 }
 
 void renderSplashScreen()  // renders the splash screen
 {
     COORD c = g_Console.getConsoleSize();
     c.Y /= 2;
-	c.Y -= 1;
     c.X = c.X / 2 - 8;
     g_Console.writeToBuffer(c, "1. Level Select", 0x06);
     c.Y += 2;
@@ -223,7 +224,22 @@ void renderSplashScreen()  // renders the splash screen
     g_Console.writeToBuffer(c, "2. Change Character Colour", 0x06);
     c.Y += 3;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
-    g_Console.writeToBuffer(c, "<Press Esc to Quit>", 0x06);
+    g_Console.writeToBuffer(c, "<Press Esc to Quit>", 0x02);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y = 2;
+	g_Console.writeToBuffer(c, " ___ ___   ___   ____   __ __  _____  _____  _        ___  ___   ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "|   |   | /   \\ |    \\ |  |  ||     ||     || |      /  _]|   \\  ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "| _   _ ||     ||  _  ||  |  ||__/  ||__/  || |     /  [_ |    \\ ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "|  \\_/  ||  O  ||  |  ||  |  ||   __||   __|| |___ |    _]|  D  |", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "|   |   ||     ||  |  ||  :  ||  /  ||  /  ||     ||   [_ |     |", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "|   |   ||     ||  |  ||     ||     ||     ||     ||     ||     |", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "|___|___| \\___/ |__|__| \\__,_||_____||_____||_____||_____||_____|", 0x02);
 }
 
 void renderGame()
