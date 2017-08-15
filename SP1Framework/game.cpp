@@ -11,6 +11,8 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
 WORD charColor = 0x02; // initialise character colour
+COORD monONE;
+
 
 
 // Game specific variables here
@@ -20,6 +22,7 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 
 // Console object
 Console g_Console(80, 25, "SP1 Framework");
+
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -37,9 +40,13 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
 
+
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
     g_sChar.m_bActive = true;
+
+	monONE.X = (g_Console.getConsoleSize().X / 2) - 15;
+	monONE.Y = (g_Console.getConsoleSize().Y / 2);
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 }
@@ -372,7 +379,7 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-	monsterONE();		// renders the monsters into the buffer
+	monsterLOC();		// renders the monsters into the buffer
 }
 
 void renderLevelSelect()
@@ -485,14 +492,39 @@ void monsterLOC()
 
 void monsterONE()
 {
-	COORD c = g_Console.getConsoleSize();
-	c.Y = 8;
-	c.X = c.X / 2 - 9;
-	g_Console.writeToBuffer(c, "M", 0x0C);
+	g_Console.writeToBuffer(monONE, "M", 0x0C);
 }
 
 
 void monsterAI()
 {
+		bool bSomethingHappened = false;
+		if (g_dBounceTime > g_dElapsedTime)
+			return;
+		if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
+		{
+			monONE.X--;
+			bSomethingHappened = true;
+		}
+		if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
+		{
+			monONE.X++;
+			bSomethingHappened = true;
+		}
+		if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
+		{
+			monONE.Y--;
+			bSomethingHappened = true;
+		}
+		if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
+		{
+			monONE.Y++;
+			bSomethingHappened = true;
+		}
+		if (bSomethingHappened)
+		{
+			// set the bounce time to some time in the future to prevent accidental triggers
+			g_dBounceTime = g_dElapsedTime + 0.1;
+		}
 	
 }
