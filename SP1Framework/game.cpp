@@ -145,42 +145,70 @@ void splashScreenWait() {
 
 void splashScreenSelect()    // waits for time to pass in splash screen
 {
-	if (g_abKeyPressed[K_ONE]) 
-	{
-		g_eGameState = S_LEVELSELECT;
-	}
-	else if (g_abKeyPressed[K_TWO]) 
-	{
-		g_eGameState = S_GAME;
-	}
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
-}
-
-void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
-{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
 	if (g_abKeyPressed[K_ONE])
 	{
-		g_eGameState = S_GAME;
+		g_eGameState = S_LEVELSELECT;
+		bSomethingHappened = true;
 	}
 	else if (g_abKeyPressed[K_TWO])
 	{
 		g_eGameState = S_GAME;
+		bSomethingHappened = true;
 	}
-	else if (g_abKeyPressed[K_THREE])
+	if (g_abKeyPressed[K_ESCAPE])
 	{
-		g_eGameState = S_GAME;
-	}
-	else if (g_abKeyPressed[K_FOUR])
-	{
-		g_eGameState = S_GAME;
-	}
-	else if (g_abKeyPressed[K_FIVE])
-	{
-		g_eGameState = S_GAME;
-	}
-	else if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
+	}
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+	}
+}
+
+void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+	if (g_abKeyPressed[K_ONE])
+	{
+		g_eGameState = S_GAME;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_TWO])
+	{
+		g_eGameState = S_GAME;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_THREE])
+	{
+		g_eGameState = S_GAME;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_FOUR])
+	{
+		g_eGameState = S_GAME;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_FIVE])
+	{
+		g_eGameState = S_GAME;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+		bSomethingHappened = true;
+	}
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+	}
 }
 
 void gameplay()            // gameplay logic
@@ -291,21 +319,24 @@ void renderLevelSelect()
 void renderLevelSelectBG()
 {
 	COORD c = g_Console.getConsoleSize();
-	c.Y /= 2;
-	c.X = c.X / 2 - 8;
+	c.Y = 5;
+	c.X = c.X / 2 - 9;
 	g_Console.writeToBuffer(c, "1. Level One", 0x06);
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 13;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "2. Level Two", 0x06);
-	c.Y += 3;
+	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "3. Level Three", 0x06);
-	c.Y += 4;
+	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "4. Level Four", 0x06);
-	c.Y += 5;
+	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "5. Level Five", 0x06);
+	c.Y += 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 181;
+	g_Console.writeToBuffer(c, "<Press Esc to back to main menu>", 0x06);
 }
 
 void renderMap()
