@@ -263,7 +263,7 @@ void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
     moveCharacter();    // moves the character, collision detection, physics, etc
-                        // sound can be played here too.
+	monsterAI();       // moves the monster to the player's character's location
 }
 
 void moveCharacter()
@@ -307,7 +307,7 @@ void moveCharacter()
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.25; 
+        g_dBounceTime = g_dElapsedTime + 0.08; 
     }
 }
 void processUserInput()
@@ -320,7 +320,7 @@ void processUserInput()
     // exits back to level select if escape is pressed
 	if (g_abKeyPressed[K_ESCAPE])
 	{
-		g_eGameState = S_LEVELSELECT;
+		g_eGameState = S_SPLASHSCREEN;
 		bSomethingHappened = true;
 	}
 
@@ -372,6 +372,7 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
+	monsterONE();		// renders the monsters into the buffer
 }
 
 void renderLevelSelect()
@@ -473,4 +474,25 @@ void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
     g_Console.flushBufferToConsole();
+}
+
+
+
+void monsterLOC()
+{
+	monsterONE();
+}
+
+void monsterONE()
+{
+	COORD c = g_Console.getConsoleSize();
+	c.Y = 8;
+	c.X = c.X / 2 - 9;
+	g_Console.writeToBuffer(c, "M", 0x0C);
+}
+
+
+void monsterAI()
+{
+	
 }

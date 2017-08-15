@@ -29,9 +29,9 @@ enum EGAMESTATES
 {
     S_SPLASHSCREEN,
     S_GAME,
-    S_COUNT,
 	S_LEVELSELECT,
-	S_CHARACTERCOLOR
+	S_CHARACTERCOLOR,
+	S_COUNT
 };
 
 // struct for the game character
@@ -64,5 +64,8 @@ void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
+void monsterAI();			// The monster's actions
+void monsterLOC();			// renders all monsters' location
+void monsterONE();			// monster number 1 position and looks
 
 #endif // _GAME_H
