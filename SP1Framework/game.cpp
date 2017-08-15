@@ -10,6 +10,7 @@
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+WORD charColor = 0x02; // initialise character colour
 
 
 // Game specific variables here
@@ -112,6 +113,8 @@ void update(double dt)
             break;
 		case S_LEVELSELECT: LevelScreenSelect(); // game logic for the level select screen
 			break;
+		case S_CHARACTERCOLOR: charactercolourselect();
+			break;
     }
 }
 //--------------------------------------------------------------
@@ -133,6 +136,8 @@ void render()
             break;
 		case S_LEVELSELECT: renderLevelSelect();
 			break;
+		case S_CHARACTERCOLOR: renderCharacterColour();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -148,14 +153,15 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
+
 	if (g_abKeyPressed[K_ONE])
 	{
 		g_eGameState = S_LEVELSELECT;
 		bSomethingHappened = true;
 	}
-	else if (g_abKeyPressed[K_TWO])
+	if (g_abKeyPressed[K_TWO])
 	{
-		g_eGameState = S_GAME;
+		g_eGameState = S_CHARACTERCOLOR;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_ESCAPE])
@@ -165,7 +171,7 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+		g_dBounceTime = g_dElapsedTime + 0.125;
 	}
 }
 
@@ -207,7 +213,49 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+		g_dBounceTime = g_dElapsedTime + 0.125;
+	}
+}
+
+void charactercolourselect() {
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	if (g_abKeyPressed[K_ONE])
+	{
+		charColor = 0x08;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_TWO])
+	{
+		charColor = 0x02;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_THREE])
+	{
+		charColor = 0x03;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_FOUR])
+	{
+		charColor = 0x04;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_FIVE])
+	{
+		charColor = 0x05;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+		bSomethingHappened = true;
+	}
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125;
 	}
 }
 
@@ -259,14 +307,29 @@ void moveCharacter()
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+        g_dBounceTime = g_dElapsedTime + 0.125; 
     }
 }
 void processUserInput()
 {
-    // quits the game if player hits the escape key
-    if (g_abKeyPressed[K_ESCAPE])
-        g_bQuitGame = true;    
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime) {
+		return;
+	}
+
+    // exits back to level select if escape is pressed
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_eGameState = S_LEVELSELECT;
+		bSomethingHappened = true;
+	}
+
+	if (bSomethingHappened)
+    {
+        // set the bounce time to some time in the future to prevent accidental triggers
+        g_dBounceTime = g_dElapsedTime + 0.125; 
+    }
+
 }
 
 void clearScreen()
@@ -316,6 +379,31 @@ void renderLevelSelect()
 	renderLevelSelectBG();        // renders the map to the buffer first
 }
 
+void renderCharacterColour() {
+	COORD c = g_Console.getConsoleSize();
+	c.Y = 5;
+	c.X = c.X / 2 - 9;
+	g_Console.writeToBuffer(c, "1. WHITE", 0x08);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "2. GREEN", 0x02);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "3. BLUE", 0x03);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "4. RED", 0x04);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "5. PINK", 0x05);
+	c.Y += 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 13;
+	g_Console.writeToBuffer(c, "<Press Esc to go back>", 0x06);
+	c.Y = g_Console.getConsoleSize().Y / 2;
+	c.X = 2;
+	g_Console.writeToBuffer(c, "Current Colour", charColor);
+}
+
 void renderLevelSelectBG()
 {
 	COORD c = g_Console.getConsoleSize();
@@ -335,8 +423,8 @@ void renderLevelSelectBG()
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "5. Level Five", 0x06);
 	c.Y += 3;
-	c.X = g_Console.getConsoleSize().X / 2 - 181;
-	g_Console.writeToBuffer(c, "<Press Esc to back to main menu>", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 13;
+	g_Console.writeToBuffer(c, "<Press Esc to go back>", 0x06);
 }
 
 void renderMap()
@@ -360,11 +448,6 @@ void renderMap()
 void renderCharacter()
 {
     // Draw the location of the character
-    WORD charColor = 0x0C;
-    if (g_sChar.m_bActive)
-    {
-        charColor = 0x0A;
-    }
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
 }
 

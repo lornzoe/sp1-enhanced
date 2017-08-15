@@ -50,6 +50,8 @@ void splashScreenWait();    // waits for time to pass in splash screen
 void splashScreenSelect();	// handles keypresses in main menu
 void renderLevelSelectBG(); // handles level select 
 void LevelScreenSelect();	// handles the key for level select
+void renderCharacterColour();	// renders character colour select screen
+void charactercolourselect();	//handles logic for character colour select screen
 void renderLevelSelect();	// handles renderlevelselectBG
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
