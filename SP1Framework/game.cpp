@@ -157,6 +157,8 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 	if (g_abKeyPressed[K_ONE])
 	{
 		g_eGameState = S_LEVELSELECT;
+		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
+		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_TWO])
@@ -372,7 +374,7 @@ void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
-	monsterONE();		// renders the monsters into the buffer
+	monsterLOC();		// renders the monsters into the buffer
 }
 
 void renderLevelSelect()
@@ -489,6 +491,8 @@ void monsterONE()
 	c.Y = 8;
 	c.X = c.X / 2 - 9;
 	g_Console.writeToBuffer(c, "M", 0x0C);
+
+
 }
 
 
