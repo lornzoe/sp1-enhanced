@@ -171,7 +171,7 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125;
+		g_dBounceTime = g_dElapsedTime + 0.25;
 	}
 }
 
@@ -213,7 +213,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125;
+		g_dBounceTime = g_dElapsedTime + 0.25;
 	}
 }
 
@@ -255,7 +255,7 @@ void charactercolourselect() {
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125;
+		g_dBounceTime = g_dElapsedTime + 0.25;
 	}
 }
 
@@ -307,7 +307,7 @@ void moveCharacter()
     if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.125; 
+        g_dBounceTime = g_dElapsedTime + 0.25; 
     }
 }
 void processUserInput()
@@ -327,7 +327,7 @@ void processUserInput()
 	if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.125; 
+        g_dBounceTime = g_dElapsedTime + 0.25; 
     }
 
 }
