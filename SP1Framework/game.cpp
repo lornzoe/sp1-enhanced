@@ -11,6 +11,7 @@ double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
 
+
 // Game specific variables here
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
@@ -76,6 +77,11 @@ void getInput( void )
     g_abKeyPressed[K_RIGHT]  = isKeyPressed(VK_RIGHT);
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_ONE] = isKeyPressed(49);
+	g_abKeyPressed[K_TWO] = isKeyPressed(50);
+	g_abKeyPressed[K_THREE] = isKeyPressed(51);
+	g_abKeyPressed[K_FOUR] = isKeyPressed(52);
+	g_abKeyPressed[K_FIVE] = isKeyPressed(53);
 }
 
 //--------------------------------------------------------------
@@ -130,8 +136,15 @@ void render()
 
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-    if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
-        g_eGameState = S_GAME;
+    //if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
+       // g_eGameState = S_GAME;
+	if (g_abKeyPressed[K_ONE]) {
+		g_eGameState = S_GAME;
+	}
+	else if (g_abKeyPressed[K_TWO]) {
+		g_eGameState = S_GAME;
+	}
+
 }
 
 void gameplay()            // gameplay logic
@@ -201,15 +214,16 @@ void clearScreen()
 void renderSplashScreen()  // renders the splash screen
 {
     COORD c = g_Console.getConsoleSize();
-    c.Y /= 3;
-    c.X = c.X / 2 - 9;
-    g_Console.writeToBuffer(c, "A game in 3 seconds", 0x03);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 20;
-    g_Console.writeToBuffer(c, "Press <Space> to change character colour", 0x09);
-    c.Y += 1;
+    c.Y /= 2;
+	c.Y -= 1;
+    c.X = c.X / 2 - 8;
+    g_Console.writeToBuffer(c, "1. Level Select", 0x06);
+    c.Y += 2;
+    c.X = g_Console.getConsoleSize().X / 2 - 13;
+    g_Console.writeToBuffer(c, "2. Change Character Colour", 0x06);
+    c.Y += 3;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
-    g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x09);
+    g_Console.writeToBuffer(c, "<Press Esc to Quit>", 0x06);
 }
 
 void renderGame()

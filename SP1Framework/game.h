@@ -15,7 +15,12 @@ enum EKEYS
     K_RIGHT,
     K_ESCAPE,
     K_SPACE,
-    K_COUNT
+    K_COUNT,
+	K_ONE,
+	K_TWO,
+	K_THREE,
+	K_FOUR,
+	K_FIVE
 };
 
 // Enumeration for the different screen states
