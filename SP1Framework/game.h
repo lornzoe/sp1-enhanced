@@ -28,7 +28,9 @@ enum EGAMESTATES
 {
     S_SPLASHSCREEN,
     S_GAME,
-    S_COUNT
+    S_COUNT,
+	S_LEVELSELECT,
+	S_CHARACTERCOLOR
 };
 
 // struct for the game character
@@ -46,6 +48,9 @@ void shutdown    ( void );      // do clean up, free memory
 
 void splashScreenWait();    // waits for time to pass in splash screen
 void splashScreenSelect();	// handles keypresses in main menu
+void renderLevelSelectBG(); // handles level select 
+void LevelScreenSelect();	// handles the key for level select
+void renderLevelSelect();	// handles renderlevelselectBG
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit

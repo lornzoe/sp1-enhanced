@@ -110,6 +110,8 @@ void update(double dt)
             break;
         case S_GAME: gameplay(); // gameplay logic when we are in the game
             break;
+		case S_LEVELSELECT: LevelScreenSelect(); // game logic for the level select screen
+			break;
     }
 }
 //--------------------------------------------------------------
@@ -129,6 +131,8 @@ void render()
             break;
         case S_GAME: renderGame();
             break;
+		case S_LEVELSELECT: renderLevelSelect();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -141,12 +145,42 @@ void splashScreenWait() {
 
 void splashScreenSelect()    // waits for time to pass in splash screen
 {
-	if (g_abKeyPressed[K_ONE]) {
+	if (g_abKeyPressed[K_ONE]) 
+	{
+		g_eGameState = S_LEVELSELECT;
+	}
+	else if (g_abKeyPressed[K_TWO]) 
+	{
 		g_eGameState = S_GAME;
 	}
-	else if (g_abKeyPressed[K_TWO]) {
+	if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
+}
+
+void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
+{
+	if (g_abKeyPressed[K_ONE])
+	{
 		g_eGameState = S_GAME;
 	}
+	else if (g_abKeyPressed[K_TWO])
+	{
+		g_eGameState = S_GAME;
+	}
+	else if (g_abKeyPressed[K_THREE])
+	{
+		g_eGameState = S_GAME;
+	}
+	else if (g_abKeyPressed[K_FOUR])
+	{
+		g_eGameState = S_GAME;
+	}
+	else if (g_abKeyPressed[K_FIVE])
+	{
+		g_eGameState = S_GAME;
+	}
+	else if (g_abKeyPressed[K_ESCAPE])
+		g_bQuitGame = true;
 }
 
 void gameplay()            // gameplay logic
@@ -242,10 +276,36 @@ void renderSplashScreen()  // renders the splash screen
 	g_Console.writeToBuffer(c, "|___|___| \\___/ |__|__| \\__,_||_____||_____||_____||_____||_____|", 0x02);
 }
 
+
 void renderGame()
 {
     renderMap();        // renders the map to the buffer first
     renderCharacter();  // renders the character into the buffer
+}
+
+void renderLevelSelect()
+{
+	renderLevelSelectBG();        // renders the map to the buffer first
+}
+
+void renderLevelSelectBG()
+{
+	COORD c = g_Console.getConsoleSize();
+	c.Y /= 2;
+	c.X = c.X / 2 - 8;
+	g_Console.writeToBuffer(c, "1. Level One", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 13;
+	g_Console.writeToBuffer(c, "2. Level Two", 0x06);
+	c.Y += 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "3. Level Three", 0x06);
+	c.Y += 4;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "4. Level Four", 0x06);
+	c.Y += 5;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "5. Level Five", 0x06);
 }
 
 void renderMap()
