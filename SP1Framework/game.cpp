@@ -147,6 +147,9 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 	else if (g_abKeyPressed[K_TWO]) {
 		g_eGameState = S_GAME;
 	}
+	else if (g_abKeyPressed[K_ESCAPE]){
+		g_bQuitGame = true;
+	}
 }
 
 void gameplay()            // gameplay logic
