@@ -91,6 +91,13 @@ void getInput( void )
 	g_abKeyPressed[K_THREE] = isKeyPressed(51);
 	g_abKeyPressed[K_FOUR] = isKeyPressed(52);
 	g_abKeyPressed[K_FIVE] = isKeyPressed(53);
+	g_abKeyPressed[K_SIX] = isKeyPressed(54);
+	g_abKeyPressed[K_SEVEN] = isKeyPressed(55);
+	g_abKeyPressed[K_EIGHT] = isKeyPressed(56);
+	g_abKeyPressed[K_NINE] = isKeyPressed(57);
+	g_abKeyPressed[K_ZERO] = isKeyPressed(48);
+	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[K_BACKSPACE] = isKeyPressed(VK_BACK);
 }
 
 //--------------------------------------------------------------

@@ -20,7 +20,15 @@ enum EKEYS
 	K_THREE,
 	K_FOUR,
 	K_FIVE,
-	K_COUNT
+	//adding keys 6-0, enter + backspace for encounterMonster.
+	K_SIX,
+	K_SEVEN,
+	K_EIGHT,
+	K_NINE,
+	K_ZERO,
+	K_ENTER,
+	K_BACKSPACE,
+	K_COUNT // unsure what this does, leaving it at the end.
 
 };
 
