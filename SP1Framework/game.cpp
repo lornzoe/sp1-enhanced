@@ -46,7 +46,7 @@ void init( void )
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
     g_sChar.m_bActive = true;
 
-	monONE.X = (g_Console.getConsoleSize().X / 2) +25;
+	monONE.X = (g_Console.getConsoleSize().X);
 	monONE.Y = (g_Console.getConsoleSize().Y / 2);
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
