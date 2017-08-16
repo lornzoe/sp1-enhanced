@@ -18,6 +18,7 @@ COORD monONE;
 // Game specific variables here
 SGameChar   g_sChar;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
+ELEVELS g_currentlevel;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
@@ -190,26 +191,31 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	if (g_abKeyPressed[K_ONE])
 	{
 		g_eGameState = S_GAME;
+		g_currentlevel = S_LEVELONE;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_TWO])
 	{
 		g_eGameState = S_GAME;
+		g_currentlevel = S_LEVELTWO;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_THREE])
 	{
 		g_eGameState = S_GAME;
+		g_currentlevel = S_LEVELTHREE;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_FOUR])
 	{
 		g_eGameState = S_GAME;
+		g_currentlevel = S_LEVELFOUR;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_FIVE])
 	{
 		g_eGameState = S_GAME;
+		g_currentlevel = S_LEVELFIVE;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_ESCAPE])

@@ -34,6 +34,16 @@ enum EGAMESTATES
 	S_COUNT
 };
 
+enum ELEVELS
+{
+	S_LEVELONE,
+	S_LEVELTWO,
+	S_LEVELTHREE,
+	S_LEVELFOUR,
+	S_LEVELFIVE,
+	S_COUNT
+};
+
 // struct for the game character
 struct SGameChar
 {
@@ -68,5 +78,6 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 void monsterAI();			// The monster's actions
 void monsterLOC();			// renders all monsters' location
 void monsterONE();			// monster number 1 position and looks
+void level1();				// 
 
 #endif // _GAME_H
