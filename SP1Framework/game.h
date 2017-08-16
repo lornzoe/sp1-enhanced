@@ -51,6 +51,14 @@ enum ELEVELS
 	L_LEVELFIVE,
 	L_COUNT
 };
+enum MON_IDLE
+{
+	MON_NOTHING,
+	MON_UP,
+	MON_DOWN,
+	MON_LEFT,
+	MON_RIGHT
+};
 
 // struct for the game character
 struct SGameChar

@@ -13,7 +13,7 @@ bool    g_abKeyPressed[K_COUNT];
 WORD charColor = 0x02; // initialise character colour
 COORD monONE;
 
-
+MON_IDLE monsterIDLEMOV();
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -504,6 +504,9 @@ void monsterONE()
 
 void monsterAI()
 {
+	MON_IDLE currentMOV;
+	currentMOV = monsterIDLEMOV();
+
 		bool bSomethingHappened = false;
 		if (g_dBounceTime > g_dElapsedTime)
 			return;
@@ -531,11 +534,100 @@ void monsterAI()
 				bSomethingHappened = true;
 			}
 		}
-		
+		else
+		{
+			switch (currentMOV) {
+			case MON_NOTHING:
+				break;
+			case MON_UP:
+				if (monONE.Y < g_Console.getConsoleSize().Y - 1)
+				{
+					monONE.Y++;
+					bSomethingHappened = true;
+					break;
+				}
+				else
+				{
+					bSomethingHappened = true;
+					break;
+				}
+			case MON_DOWN:
+				if (monONE.Y > 0)
+				{
+					monONE.Y--;
+					bSomethingHappened = true;
+					break;
+				}
+				else
+				{
+					bSomethingHappened = true;
+					break;
+				}
+			case MON_LEFT:
+				if (monONE.X > 0)
+				{
+					monONE.X--;
+					bSomethingHappened = true;
+					break;
+				}
+				else
+				{
+					bSomethingHappened = true;
+					break;
+				}
+			case MON_RIGHT:
+				if (monONE.X < g_Console.getConsoleSize().X - 1)
+				{
+					monONE.X++;
+					bSomethingHappened = true;
+					break;
+				}
+				else 
+				{
+					bSomethingHappened = true;
+					break;
+				}
+			default:
+				break;
+			}
+		}
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
 			g_dBounceTime = g_dElapsedTime + 0.08;
 		}
 	
+}
+
+MON_IDLE monsterIDLEMOV()
+{
+	MON_IDLE MON_MOVEMENT = MON_NOTHING;
+
+
+	int monz;
+	srand((int)time(NULL));
+	monz = rand() % 5;
+
+	if (monz == 0)
+	{
+		MON_MOVEMENT = MON_NOTHING;
+	}
+	else if (monz == 1)
+	{
+		MON_MOVEMENT = MON_UP;
+	}
+	else if (monz == 2)
+	{
+		MON_MOVEMENT = MON_DOWN;
+	}
+	else if (monz == 3)
+	{
+		MON_MOVEMENT = MON_LEFT;
+	}
+	else if (monz == 4)
+	{
+		MON_MOVEMENT = MON_RIGHT;
+	}
+
+	return MON_MOVEMENT;
 }
