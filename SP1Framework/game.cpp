@@ -286,25 +286,29 @@ void moveCharacter()
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y--;
         bSomethingHappened = true;
+		monsterAI();
     }
     if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X--;
         bSomethingHappened = true;
+		monsterAI();
     }
     if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y++;
         bSomethingHappened = true;
-    }
+		monsterAI();
+	}
     if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X++;
         bSomethingHappened = true;
-    }
+		monsterAI();
+	}
     if (g_abKeyPressed[K_SPACE])
     {
         g_sChar.m_bActive = !g_sChar.m_bActive;
@@ -524,7 +528,7 @@ void monsterAI()
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
-			g_dBounceTime = g_dElapsedTime + 0.1;
+			g_dBounceTime = g_dElapsedTime + 0.08;
 		}
 	
 }
