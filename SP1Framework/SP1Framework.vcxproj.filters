@@ -36,9 +36,6 @@
     <ClCompile Include="maps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="monsterData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
@@ -48,9 +45,6 @@
       <Filter>Header Files\Framework</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="monsterData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
