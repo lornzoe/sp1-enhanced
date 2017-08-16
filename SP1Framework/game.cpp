@@ -45,7 +45,7 @@ void init( void )
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
     g_sChar.m_bActive = true;
 
-	monONE.X = (g_Console.getConsoleSize().X / 2) - 15;
+	monONE.X = (g_Console.getConsoleSize().X / 2) - 25;
 	monONE.Y = (g_Console.getConsoleSize().Y / 2);
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -505,25 +505,28 @@ void monsterAI()
 		bool bSomethingHappened = false;
 		if (g_dBounceTime > g_dElapsedTime)
 			return;
-		if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
+		if ((monONE.X >= (g_sChar.m_cLocation.X - 5) || monONE.X >= (g_sChar.m_cLocation.X + 5)) && (monONE.Y >= (g_sChar.m_cLocation.Y - 3) || monONE.Y >= (g_sChar.m_cLocation.Y + 3)))
 		{
-			monONE.X--;
-			bSomethingHappened = true;
-		}
-		if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
-		{
-			monONE.X++;
-			bSomethingHappened = true;
-		}
-		if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
-		{
-			monONE.Y--;
-			bSomethingHappened = true;
-		}
-		if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
-		{
-			monONE.Y++;
-			bSomethingHappened = true;
+			if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
+			{
+				monONE.X--;
+				bSomethingHappened = true;
+			}
+			if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
+			{
+				monONE.X++;
+				bSomethingHappened = true;
+			}
+			if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
+			{
+				monONE.Y--;
+				bSomethingHappened = true;
+			}
+			if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
+			{
+				monONE.Y++;
+				bSomethingHappened = true;
+			}
 		}
 		if (bSomethingHappened)
 		{
