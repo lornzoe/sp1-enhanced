@@ -507,11 +507,7 @@ void monsterAI()
 			return;
 		if ((monONE.X >= (g_sChar.m_cLocation.X - 5)) && (monONE.Y >= (g_sChar.m_cLocation.Y - 3)))			//for the right side detection of the monster
 		{
-			if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
-			{
-				monONE.X--;
-				bSomethingHappened = true;
-			}
+			
 			if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
 			{
 				monONE.X++;
@@ -520,6 +516,15 @@ void monsterAI()
 			if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
 			{
 				monONE.Y--;
+				bSomethingHappened = true;
+			}
+			
+		}
+		else if ((monONE.X <= (g_sChar.m_cLocation.X + 5)) && (monONE.Y <= (g_sChar.m_cLocation.Y + 3)))	//for the left side of the monster
+		{
+			if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
+			{
+				monONE.X--;
 				bSomethingHappened = true;
 			}
 			if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
