@@ -332,6 +332,8 @@ void processUserInput()
 	if (g_abKeyPressed[K_ESCAPE])
 	{
 		g_eGameState = S_SPLASHSCREEN;
+		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
+		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
 		bSomethingHappened = true;
 	}
 
