@@ -191,31 +191,31 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	if (g_abKeyPressed[K_ONE])
 	{
 		g_eGameState = S_GAME;
-		g_currentlevel = S_LEVELONE;
+		g_currentlevel = L_LEVELONE;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_TWO])
 	{
 		g_eGameState = S_GAME;
-		g_currentlevel = S_LEVELTWO;
+		g_currentlevel = L_LEVELTWO;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_THREE])
 	{
 		g_eGameState = S_GAME;
-		g_currentlevel = S_LEVELTHREE;
+		g_currentlevel = L_LEVELTHREE;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_FOUR])
 	{
 		g_eGameState = S_GAME;
-		g_currentlevel = S_LEVELFOUR;
+		g_currentlevel = L_LEVELFOUR;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_FIVE])
 	{
 		g_eGameState = S_GAME;
-		g_currentlevel = S_LEVELFIVE;
+		g_currentlevel = L_LEVELFIVE;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_ESCAPE])
@@ -449,20 +449,7 @@ void renderLevelSelectBG()
 
 void renderMap()
 {
-    // Set up sample colours, and output shadings
-    const WORD colors[] = {
-        0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-        0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
-    };
-
-    COORD c;
-    for (int i = 0; i < 12; ++i)
-    {
-        c.X = 5 * i;
-        c.Y = i + 1;
-        colour(colors[i]);
-        g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-    }
+	level1();
 }
 
 void renderCharacter()
