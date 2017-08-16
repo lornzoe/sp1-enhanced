@@ -91,6 +91,13 @@ void getInput( void )
 	g_abKeyPressed[K_THREE] = isKeyPressed(51);
 	g_abKeyPressed[K_FOUR] = isKeyPressed(52);
 	g_abKeyPressed[K_FIVE] = isKeyPressed(53);
+	g_abKeyPressed[K_SIX] = isKeyPressed(54);
+	g_abKeyPressed[K_SEVEN] = isKeyPressed(55);
+	g_abKeyPressed[K_EIGHT] = isKeyPressed(56);
+	g_abKeyPressed[K_NINE] = isKeyPressed(57);
+	g_abKeyPressed[K_ZERO] = isKeyPressed(48);
+	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
+	g_abKeyPressed[K_BACKSPACE] = isKeyPressed(VK_BACK);
 }
 
 //--------------------------------------------------------------
@@ -505,7 +512,7 @@ void monsterAI()
 		bool bSomethingHappened = false;
 		if (g_dBounceTime > g_dElapsedTime)
 			return;
-		if ((monONE.X >= (g_sChar.m_cLocation.X - 5)) && (monONE.X <= (g_sChar.m_cLocation.X + 5)) && (monONE.Y <= (g_sChar.m_cLocation.Y + 3)) && (monONE.Y >= (g_sChar.m_cLocation.Y - 3)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
+		if ((monONE.X >= (g_sChar.m_cLocation.X - 15)) && (monONE.X <= (g_sChar.m_cLocation.X + 15)) && (monONE.Y <= (g_sChar.m_cLocation.Y + 5)) && (monONE.Y >= (g_sChar.m_cLocation.Y - 5)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
 		{
 			
 			if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
