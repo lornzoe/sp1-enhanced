@@ -459,7 +459,7 @@ void renderMap()
 	COORD c = g_Console.getConsoleSize();
 	for (int y = 0; y <= 80; y++) {
 		for (int x = 0; x <= 25; x++) {
-			g_Console.writeToBuffer(x,y, "X", 0x03);
+			g_Console.writeToBuffer(level1(c), "X", 0x03);
 		}
 	}
 }
