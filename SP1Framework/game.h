@@ -40,7 +40,6 @@ enum EGAMESTATES
     S_GAME,
 	S_LEVELSELECT,
 	S_CHARACTERCOLOR,
-	S_ENCOUNTERMONSTER,
 	S_COUNT
 };
 
@@ -101,9 +100,4 @@ char level2(int r, int c);	// returns positions of level two elements
 char level3(int r, int c);	// returns positions of level three elements
 char level4(int r, int c);	// returns positions of level four elements
 char level5(int r, int c);	// returns positions of level five elements
-
-void renderEncounterMonster();
-void renderMonster();
-void monsterPuzzle();
-void renderMonsterPuzzle();
 #endif // _GAME_H
