@@ -6,12 +6,11 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
-WORD charColor = 0x02; // initialise character colour
-COORD monONE;
 
 MON_IDLE monsterIDLEMOV();
 
@@ -20,6 +19,9 @@ SGameChar   g_sChar;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 ELEVELS g_currentlevel;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
+WORD charColor = 0x02; // initialise character colour
+COORD monONE;
+
 
 // Console object
 Console g_Console(80, 25, "Monuzzled");
@@ -458,9 +460,32 @@ void renderMap()
 {
 	for (int r = 0; r < 25; r++) {
 		for (int c = 0; c < 80; c++) {
-			char d = level1(r, c);
-			if (level1(r,c) == 49) {
-				g_Console.writeToBuffer(c,r, "X", 0x03);
+			switch (g_currentlevel) {
+				case L_LEVELONE:
+					if (level1(r, c) == 49) {
+						g_Console.writeToBuffer(c, r, "X", 0x03);
+					}
+					break;
+				case L_LEVELTWO:
+					if (level2(r, c) == 49) {
+						g_Console.writeToBuffer(c, r, "X", 0x03);
+					}
+					break;
+				case L_LEVELTHREE:
+					if (level3(r, c) == 49) {
+						g_Console.writeToBuffer(c, r, "X", 0x03);
+					}
+					break;
+				case L_LEVELFOUR:
+					if (level4(r, c) == 49) {
+						g_Console.writeToBuffer(c, r, "X", 0x03);
+					}
+					break;
+				case L_LEVELFIVE:
+					if (level5(r, c) == 49) {
+						g_Console.writeToBuffer(c, r, "X", 0x03);
+					}
+					break;
 			}
 		}
 	}

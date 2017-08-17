@@ -2,6 +2,7 @@
 #define _GAME_H
 
 #include "Framework\timer.h"
+#include <fstream>
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -95,5 +96,8 @@ void monsterAI();			// The monster's actions
 void monsterLOC();			// renders all monsters' location
 void monsterONE();			// monster number 1 position and looks
 char level1(int r, int c);	// returns positions of level one elements
-
+char level2(int r, int c);	// returns positions of level two elements
+char level3(int r, int c);	// returns positions of level three elements
+char level4(int r, int c);	// returns positions of level four elements
+char level5(int r, int c);	// returns positions of level five elements
 #endif // _GAME_H
