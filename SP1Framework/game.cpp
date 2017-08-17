@@ -48,7 +48,7 @@ void init( void )
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
     g_sChar.m_bActive = true;
 
-	monONE.X = (g_Console.getConsoleSize().X);
+	monONE.X = (g_Console.getConsoleSize().X / 2 - 35);
 	monONE.Y = (g_Console.getConsoleSize().Y / 2);
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -296,28 +296,28 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
+    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && (level1(g_sChar.m_cLocation.Y - 1, g_sChar.m_cLocation.X) == 0) )
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y--;
         bSomethingHappened = true;
 		monsterAI();
     }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0)
+    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (level1(g_sChar.m_cLocation.Y, g_sChar.m_cLocation.X - 1) == 0) )
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X--;
         bSomethingHappened = true;
 		monsterAI();
     }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1)
+    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (level1(g_sChar.m_cLocation.Y + 1, g_sChar.m_cLocation.X) == 0) )
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y++;
         bSomethingHappened = true;
 		monsterAI();
 	}
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (level1(g_sChar.m_cLocation.Y, g_sChar.m_cLocation.X + 1) == 0) )
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X++;
@@ -541,26 +541,28 @@ void monsterAI()
 
 		bool bSomethingHappened = false;
 		if (g_dBounceTime > g_dElapsedTime)
+		{
 			return;
-		if ((monONE.X >= (g_sChar.m_cLocation.X - 15)) && (monONE.X <= (g_sChar.m_cLocation.X + 15)) && (monONE.Y <= (g_sChar.m_cLocation.Y + 5)) && (monONE.Y >= (g_sChar.m_cLocation.Y - 5)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
+		}
+		if ( (monONE.X >= (g_sChar.m_cLocation.X - 15)) && (monONE.X <= (g_sChar.m_cLocation.X + 15)) && (monONE.Y <= (g_sChar.m_cLocation.Y + 5)) && (monONE.Y >= (g_sChar.m_cLocation.Y - 5)) )			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
 		{
 			
-			if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
+			if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (level1(monONE.Y, monONE.X + 1) == 0) )
 			{
 				monONE.X++;
 				bSomethingHappened = true;
 			}
-			if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X)
+			if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (level1(monONE.Y, monONE.X - 1) == 0) )
 			{
 				monONE.X--;
 				bSomethingHappened = true;
 			}
-			if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
+			if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (level1(monONE.Y - 1, monONE.X) == 0) )
 			{
 				monONE.Y--;
 				bSomethingHappened = true;
 			}
-			if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y)
+			if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (level1(monONE.Y + 1, monONE.X) == 0) )
 			{
 				monONE.Y++;
 				bSomethingHappened = true;
@@ -572,19 +574,7 @@ void monsterAI()
 			case MON_NOTHING:
 				break;
 			case MON_UP:
-				if (monONE.Y < g_Console.getConsoleSize().Y - 1)
-				{
-					monONE.Y++;
-					bSomethingHappened = true;
-					break;
-				}
-				else
-				{
-					bSomethingHappened = true;
-					break;
-				}
-			case MON_DOWN:
-				if (monONE.Y > 0)
+				if ( (monONE.Y > 0) && (level1(monONE.Y - 1,monONE.X) == 0) )
 				{
 					monONE.Y--;
 					bSomethingHappened = true;
@@ -595,8 +585,20 @@ void monsterAI()
 					bSomethingHappened = true;
 					break;
 				}
+			case MON_DOWN:
+				if ( (monONE.Y < g_Console.getConsoleSize().Y - 1) && (level1(monONE.Y + 1, monONE.X) == 0) )
+				{
+					monONE.Y++;
+					bSomethingHappened = true;
+					break;
+				}
+				else
+				{
+					bSomethingHappened = true;
+					break;
+				}
 			case MON_LEFT:
-				if (monONE.X > 0)
+				if ( (monONE.X > 0) && (level1(monONE.Y, monONE.X - 1) == 0) )
 				{
 					monONE.X--;
 					bSomethingHappened = true;
@@ -608,7 +610,7 @@ void monsterAI()
 					break;
 				}
 			case MON_RIGHT:
-				if (monONE.X < g_Console.getConsoleSize().X - 1)
+				if ( (monONE.X < (g_Console.getConsoleSize().X + 79)) && (level1(monONE.Y, monONE.X + 1) == 0) )
 				{
 					monONE.X++;
 					bSomethingHappened = true;
