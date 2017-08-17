@@ -7,6 +7,11 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <string>
+#include <limits>
+#include <algorithm>
+
+using namespace std;
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
@@ -458,33 +463,25 @@ void renderLevelSelectBG()
 
 void renderMap()
 {
+	char map[25][80];
+
+	ifstream file;
+	string row;
+	file.open("level2.txt");
+
+	for (int i = 0; i < 25; i++) {
+		getline(file, row);
+		for (int j = 0; j < 80; j++) {
+			map[i][j] = row[j];
+		}
+	}
+	file.close();
+
 	for (int r = 0; r < 25; r++) {
 		for (int c = 0; c < 80; c++) {
-			switch (g_currentlevel) {
-				case L_LEVELONE:
-					if (level1(r, c) == 49) {
-						g_Console.writeToBuffer(c, r, "X", 0x03);
-					}
-					break;
-				case L_LEVELTWO:
-					if (level2(r, c) == 49) {
-						g_Console.writeToBuffer(c, r, "X", 0x03);
-					}
-					break;
-				case L_LEVELTHREE:
-					if (level3(r, c) == 49) {
-						g_Console.writeToBuffer(c, r, "X", 0x03);
-					}
-					break;
-				case L_LEVELFOUR:
-					if (level4(r, c) == 49) {
-						g_Console.writeToBuffer(c, r, "X", 0x03);
-					}
-					break;
-				case L_LEVELFIVE:
-					if (level5(r, c) == 49) {
-						g_Console.writeToBuffer(c, r, "X", 0x03);
-					}
+			switch (map[r][c]) {
+				case 49:
+					g_Console.writeToBuffer(c, r, "X", 0x03);
 					break;
 			}
 		}
