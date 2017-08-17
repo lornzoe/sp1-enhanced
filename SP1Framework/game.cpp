@@ -22,7 +22,7 @@ ELEVELS g_currentlevel;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
 // Console object
-Console g_Console(80, 25, "SP1 Framework");
+Console g_Console(80, 25, "Monuzzled");
 
 
 //--------------------------------------------------------------
@@ -456,10 +456,12 @@ void renderLevelSelectBG()
 
 void renderMap()
 {
-	COORD c = g_Console.getConsoleSize();
-	for (int y = 0; y <= 80; y++) {
-		for (int x = 0; x <= 25; x++) {
-			g_Console.writeToBuffer(level1(c), "X", 0x03);
+	for (int r = 0; r < 25; r++) {
+		for (int c = 0; c < 80; c++) {
+			char d = level1(r, c);
+			if (level1(r,c) == 49) {
+				g_Console.writeToBuffer(c,r, "X", 0x03);
+			}
 		}
 	}
 }

@@ -94,6 +94,6 @@ void renderToScreen();      // dump the contents of the buffer to the screen, on
 void monsterAI();			// The monster's actions
 void monsterLOC();			// renders all monsters' location
 void monsterONE();			// monster number 1 position and looks
-COORD level1(COORD c);				// returns positions of level one elements
+char level1(int r, int c);	// returns positions of level one elements
 
 #endif // _GAME_H
