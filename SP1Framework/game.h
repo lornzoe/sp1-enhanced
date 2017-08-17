@@ -1,6 +1,10 @@
 #ifndef _GAME_H
 #define _GAME_H
 
+#define MON_DETECT_RANGE_X 15
+#define MON_DETECT_RANGE_Y 5
+#define BLANK_SPACE 48
+
 #include "Framework\timer.h"
 #include <fstream>
 

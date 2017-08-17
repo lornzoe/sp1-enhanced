@@ -11,6 +11,7 @@
 #include <limits>
 #include <algorithm>
 
+
 using namespace std;
 
 double  g_dElapsedTime;
@@ -42,6 +43,9 @@ Console g_Console(80, 25, "Monuzzled");
 //--------------------------------------------------------------
 void init( void )
 {
+	//seed for randomiser
+	srand((int)time(NULL));
+
     // Set precision for floating point output
     g_dElapsedTime = 0.0;
     g_dBounceTime = 0.0;
@@ -302,28 +306,28 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) == 48) 
+    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) == BLANK_SPACE)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y--;
         bSomethingHappened = true;
 		monsterAI();
     }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) == 48) 
+    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) == BLANK_SPACE)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X--;
         bSomethingHappened = true;
 		monsterAI();
     }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) == 48) 
+    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) == BLANK_SPACE)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y++;
         bSomethingHappened = true;
 		monsterAI();
 	}
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) == 48)
+    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) == BLANK_SPACE)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X++;
@@ -559,25 +563,25 @@ void monsterAI()
 		{
 			return;
 		}
-		if ( (monONE.X >= (g_sChar.m_cLocation.X - 15)) && (monONE.X <= (g_sChar.m_cLocation.X + 15)) && (monONE.Y <= (g_sChar.m_cLocation.Y + 5)) && (monONE.Y >= (g_sChar.m_cLocation.Y - 5)) )			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
+		if ( (monONE.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (monONE.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (monONE.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (monONE.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)) )			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
 		{
 			
-			if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X + 1]) == 48)
+			if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
 			{
 				monONE.X++;
 				bSomethingHappened = true;
 			}
-			if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X - 1]) == 48)
+			if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X - 1]) == BLANK_SPACE)
 			{
 				monONE.X--;
 				bSomethingHappened = true;
 			}
-			if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y - 1][monONE.X]) == 48)
+			if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
 			{
 				monONE.Y--;
 				bSomethingHappened = true;
 			}
-			if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y + 1][monONE.X]) == 48)
+			if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y + 1][monONE.X]) == BLANK_SPACE)
 			{
 				monONE.Y++;
 				bSomethingHappened = true;
@@ -589,7 +593,7 @@ void monsterAI()
 			case MON_NOTHING:
 				break;
 			case MON_UP:
-				if ( (monONE.Y > 0) && (map[monONE.Y - 1][monONE.X]) == 48) 
+				if ( (monONE.Y > 0) && (map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
 				{
 					monONE.Y--;
 					bSomethingHappened = true;
@@ -601,7 +605,7 @@ void monsterAI()
 					break;
 				}
 			case MON_DOWN:
-				if ( (monONE.Y < g_Console.getConsoleSize().Y - 1) && (map[monONE.Y + 1][monONE.X]) == 48) 
+				if ( (monONE.Y < g_Console.getConsoleSize().Y - 1) && (map[monONE.Y + 1][monONE.X]) == BLANK_SPACE)
 				{
 					monONE.Y++;
 					bSomethingHappened = true;
@@ -613,7 +617,7 @@ void monsterAI()
 					break;
 				}
 			case MON_LEFT:
-				if ( (monONE.X > 0) && (map[monONE.Y][monONE.X - 1]) == 48) 
+				if ( (monONE.X > 0) && (map[monONE.Y][monONE.X - 1]) == BLANK_SPACE)
 				{
 					monONE.X--;
 					bSomethingHappened = true;
@@ -625,7 +629,7 @@ void monsterAI()
 					break;
 				}
 			case MON_RIGHT:
-				if ( (monONE.X < (g_Console.getConsoleSize().X + 79)) && (map[monONE.Y][monONE.X + 1]) == 48) 
+				if ( (monONE.X < (g_Console.getConsoleSize().X + 79)) && (map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
 				{
 					monONE.X++;
 					bSomethingHappened = true;
@@ -654,26 +658,25 @@ MON_IDLE monsterIDLEMOV()
 
 
 	int monz;
-	srand((int)time(NULL));
-	monz = rand() % 5;
+	monz = rand() % 10000;
 
-	if (monz == 0)
+	if (monz <= 1000)
 	{
 		MON_MOVEMENT = MON_NOTHING;
 	}
-	else if (monz == 1)
+	else if (monz <= 3500 && monz > 1000)
 	{
 		MON_MOVEMENT = MON_UP;
 	}
-	else if (monz == 2)
+	else if (monz <= 6000 && monz > 3500)
 	{
 		MON_MOVEMENT = MON_DOWN;
 	}
-	else if (monz == 3)
+	else if (monz <= 8500 && monz > 6000)
 	{
 		MON_MOVEMENT = MON_LEFT;
 	}
-	else if (monz == 4)
+	else if (monz <= 10000 && monz > 8500)
 	{
 		MON_MOVEMENT = MON_RIGHT;
 	}
