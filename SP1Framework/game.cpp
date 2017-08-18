@@ -10,6 +10,8 @@
 #include <string>
 #include <limits>
 #include <algorithm>
+#include <mmsystem.h>
+#pragma comment(lib, "Winmm.lib")
 
 
 using namespace std;
@@ -214,6 +216,8 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		g_currentlevel = L_LEVELONE;
 		levelChange = true;
 		bSomethingHappened = true;
+		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
+		system("0");
 	}
 	if (g_abKeyPressed[K_TWO])
 	{
@@ -221,6 +225,8 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		g_currentlevel = L_LEVELTWO;
 		levelChange = true;
 		bSomethingHappened = true;
+		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
+		system("0");
 	}
 	if (g_abKeyPressed[K_THREE])
 	{
@@ -228,6 +234,8 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		g_currentlevel = L_LEVELTHREE;
 		levelChange = true;
 		bSomethingHappened = true;
+		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
+		system("0");
 	}
 	if (g_abKeyPressed[K_FOUR])
 	{
@@ -235,6 +243,8 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		g_currentlevel = L_LEVELFOUR;
 		levelChange = true;
 		bSomethingHappened = true;
+		PlaySound(TEXT("levels4-5.wav"), NULL, SND_ASYNC | SND_LOOP);
+		system("0");
 	}
 	if (g_abKeyPressed[K_FIVE])
 	{
@@ -242,6 +252,8 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		g_currentlevel = L_LEVELFIVE;
 		levelChange = true;
 		bSomethingHappened = true;
+		PlaySound(TEXT("levels4-5.wav"), NULL, SND_ASYNC | SND_LOOP);
+		system("0");
 	}
 	if (g_abKeyPressed[K_ESCAPE])
 	{
@@ -410,6 +422,8 @@ void renderSplashScreen()  // renders the splash screen
 	g_Console.writeToBuffer(c, "|   |   ||     ||  |  ||     ||     ||     ||     ||     ||     |", 0x02);
 	c.Y += 1;
 	g_Console.writeToBuffer(c, "|___|___| \\___/ |__|__| \\__,_||_____||_____||_____||_____||_____|", 0x02);
+	PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
+	system("pause>nul");
 }
 
 
