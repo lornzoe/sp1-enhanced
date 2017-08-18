@@ -20,6 +20,7 @@ bool    g_abKeyPressed[K_COUNT];
 
 MON_IDLE monsterIDLEMOV();
 char map[25][80];
+bool levelChange = false;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -211,30 +212,35 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELONE;
+		levelChange = true;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_TWO])
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELTWO;
+		levelChange = true;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_THREE])
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELTHREE;
+		levelChange = true;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_FOUR])
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELFOUR;
+		levelChange = true;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_FIVE])
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELFIVE;
+		levelChange = true;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_ESCAPE])
@@ -294,6 +300,7 @@ void charactercolourselect() {
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
+	loadMap();			// loads map into memory
     moveCharacter();    // moves the character, collision detection, physics, etc
 	monsterAI();       // moves the monster to the player's character's location
 }
@@ -468,45 +475,47 @@ void renderLevelSelectBG()
 
 void renderMap()
 {
-	
-
-	ifstream file;
-	string row;
-	switch (g_currentlevel) {
-	case L_LEVELONE:
-		file.open("levels/level1.txt");
-		break;
-	case L_LEVELTWO:
-		file.open("levels/level2.txt");
-		break;
-	case L_LEVELTHREE:
-		file.open("levels/level3.txt");
-		break;
-	case L_LEVELFOUR:
-		file.open("levels/level4.txt");
-		break;
-	case L_LEVELFIVE:
-		file.open("levels/level5.txt");
-		break;
-
-	}
-
-	for (int i = 0; i < 25; i++) {
-		getline(file, row);
-		for (int j = 0; j < 80; j++) {
-			map[i][j] = row[j];
-		}
-	}
-	file.close();
-
 	for (int r = 0; r < 25; r++) {
 		for (int c = 0; c < 80; c++) {
-			switch (map[r][c]) {
-			case 49:
-				g_Console.writeToBuffer(c, r, "X", 0x03);
-				break;
+			if(map[r][c] == 49) {
+				g_Console.writeToBuffer(c, r, "|", 0x07);
 			}
 		}
+	}
+}
+
+void loadMap() {
+
+	if (levelChange) {
+		ifstream file;
+		string row;
+		switch (g_currentlevel) {
+		case L_LEVELONE:
+			file.open("levels/level1.txt");
+			break;
+		case L_LEVELTWO:
+			file.open("levels/level2.txt");
+			break;
+		case L_LEVELTHREE:
+			file.open("levels/level3.txt");
+			break;
+		case L_LEVELFOUR:
+			file.open("levels/level4.txt");
+			break;
+		case L_LEVELFIVE:
+			file.open("levels/level5.txt");
+			break;
+
+		}
+
+		for (int i = 0; i < 25; i++) {
+			getline(file, row);
+			for (int j = 0; j < 80; j++) {
+				map[i][j] = row[j];
+			}
+		}
+		file.close();
+		levelChange = false;
 	}
 }
 
