@@ -32,6 +32,15 @@ double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger k
 WORD charColor = 0x02; // initialise character colour
 COORD monONE;
 
+int puzzle1Integer1 = rand() % 10 + 1;
+int puzzle1Integer2 = rand() % 10 + 1;
+int puzzle1Ans;
+int puzzle1Input;
+int d1 = NULL;
+int d2 = NULL;
+P1_NUMBER digit1 = NUM_NIL;
+P1_NUMBER digit2 = NUM_NIL;
+
 
 // Console object
 Console g_Console(80, 25, "Monuzzled");
@@ -145,6 +154,8 @@ void update(double dt)
 			break;
 		case S_CHARACTERCOLOR: charactercolourselect();
 			break;
+		case S_ENCOUNTERMONSTER: monsterPuzzle();
+			break;
     }
 }
 //--------------------------------------------------------------
@@ -167,6 +178,8 @@ void render()
 		case S_LEVELSELECT: renderLevelSelect();
 			break;
 		case S_CHARACTERCOLOR: renderCharacterColour();
+			break;
+		case S_ENCOUNTERMONSTER: renderEncounterMonster();
 			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
@@ -197,6 +210,12 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 	if (g_abKeyPressed[K_ESCAPE])
 	{
 		g_bQuitGame = true;
+	}
+	if (g_abKeyPressed[K_NINE])
+	{
+		g_eGameState = S_ENCOUNTERMONSTER;
+		digit1 = NUM_NIL;
+		digit2 = NUM_NIL;
 	}
 	if (bSomethingHappened)
 	{
@@ -705,4 +724,417 @@ MON_IDLE monsterIDLEMOV()
 	}
 
 	return MON_MOVEMENT;
+}
+
+void renderMonster() {
+	COORD c = g_Console.getConsoleSize();
+	// place monsters images here
+	int monsterrng = 1; //change 2 with number of monsters + 1.
+
+	switch (monsterrng) {
+	case 1: { // slime.
+
+		c.X = g_Console.getConsoleSize().X / 2 - 15;
+		c.Y = 0;
+		g_Console.writeToBuffer(c, "           `......`           ", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "        -ossoo+++///:-`       ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "      `shhyyss++o+/////.      ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "      ohyyso(----)////:/`     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     `yyyyssssso+++/////-     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     `yyysosyyso+////:-/-     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     `yysoossoo+/:://:-/-     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     :syssooo//+/://:-:::     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   `oo+oyyso+/+////:-.:+/:`   ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   :yys++os+:/++////::/s+:-   ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "    :syyssso++////-..:sy//-   ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "    `syyyso//::///-..-oy+:`   ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     osssss+///++/:://///`    ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     .+osssso+++/::--//+-     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   ``.---:///:::---..--.      ", 0x02);
+	}
+	default:
+		break;
+	}
+
+}
+
+// FOR PUZZLES, NOTE THAT YOU ARE WORKING WITH 16<= c.Y <= 25. Scale puzzles accordingly. Will look into other resolutions after core game is done.
+void renderEncounterMonster() {
+	renderMonster();
+	COORD c = g_Console.getConsoleSize();
+	c.X = 0;
+	c.Y = 15;
+	g_Console.writeToBuffer(c, "--------------------------------------------------------------------------------", 0x02);
+	renderMonsterPuzzle();
+}
+
+void renderMonsterPuzzle() {
+	// This pretty much handles the logic and visual-side of the puzzles.
+
+	//To add: switch-case for multiple puzzles. For now it's a basic maths puzzle.
+	// What's a x b ?
+	// y=17: qn, y= 19: answer
+
+	COORD c = g_Console.getConsoleSize();
+
+	// Display "What's int1 x int2 ?"
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.Y = 17;
+	g_Console.writeToBuffer(c, "What is ", 0x02);
+	c.X = c.X + 8;
+	g_Console.writeToBuffer(c, puzzle1Integer1, 0x02);
+	c.X = c.X + 2;
+	g_Console.writeToBuffer(c, "x", 0x02);
+	c.X = c.X + 2;
+	g_Console.writeToBuffer(c, puzzle1Integer2, 0x02);
+	c.X = c.X + 2;
+	g_Console.writeToBuffer(c, "?", 0x02);
+
+	// Answer portion
+	c.X = g_Console.getConsoleSize().X / 2 - 6;
+	c.Y = 19;
+
+	g_Console.writeToBuffer(c, "Answer: ", 0x02);
+
+	//for answer container; answer will be 2 digits at most.
+
+	c.X = 42;
+	switch (digit1) {
+	case NUM_ZERO:
+	{
+		g_Console.writeToBuffer(c, "0", 0x02);
+		break;
+	}
+	case NUM_ONE:
+	{
+		g_Console.writeToBuffer(c, "1", 0x02);
+		break;
+	}
+	case NUM_TWO:
+	{
+		g_Console.writeToBuffer(c, "2", 0x02);
+		break;
+	}
+	case NUM_THREE:
+	{
+		g_Console.writeToBuffer(c, "3", 0x02);
+		break;
+	}
+	case NUM_FOUR:
+	{
+		g_Console.writeToBuffer(c, "4", 0x02);
+		break;
+	}
+	case NUM_FIVE:
+	{
+		g_Console.writeToBuffer(c, "5", 0x02);
+		break;
+	}
+	case NUM_SIX:
+	{
+		g_Console.writeToBuffer(c, "6", 0x02);
+		break;
+	}
+	case NUM_SEVEN:
+	{
+		g_Console.writeToBuffer(c, "7", 0x02);
+		break;
+	}
+	case NUM_EIGHT:
+	{
+		g_Console.writeToBuffer(c, "8", 0x02);
+		break;
+	}
+	case NUM_NINE:
+	{
+		g_Console.writeToBuffer(c, "9", 0x02);
+		break;
+	}
+	case NUM_NIL:
+	{
+		g_Console.writeToBuffer(c, "_", 0x02);
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+
+	c.X = 44;
+	switch (digit2) {
+	case NUM_ZERO:
+	{
+		g_Console.writeToBuffer(c, "0", 0x02);
+		break;
+	}
+	case NUM_ONE:
+	{
+		g_Console.writeToBuffer(c, "1", 0x02);
+		break;
+	}
+	case NUM_TWO:
+	{
+		g_Console.writeToBuffer(c, "2", 0x02);
+		break;
+	}
+	case NUM_THREE:
+	{
+		g_Console.writeToBuffer(c, "3", 0x02);
+		break;
+	}
+	case NUM_FOUR:
+	{
+		g_Console.writeToBuffer(c, "4", 0x02);
+		break;
+	}
+	case NUM_FIVE:
+	{
+		g_Console.writeToBuffer(c, "5", 0x02);
+		break;
+	}
+	case NUM_SIX:
+	{
+		g_Console.writeToBuffer(c, "6", 0x02);
+		break;
+	}
+	case NUM_SEVEN:
+	{
+		g_Console.writeToBuffer(c, "7", 0x02);
+		break;
+	}
+	case NUM_EIGHT:
+	{
+		g_Console.writeToBuffer(c, "8", 0x02);
+		break;
+	}
+	case NUM_NINE:
+	{
+		g_Console.writeToBuffer(c, "9", 0x02);
+		break;
+	}
+	case NUM_NIL:
+	{
+		g_Console.writeToBuffer(c, "_", 0x02);
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+}
+
+
+void monsterPuzzle()
+{
+
+	COORD c = g_Console.getConsoleSize();
+
+
+
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+	/* INPUT, digit1 */
+	c.X = g_Console.getConsoleSize().X / 2;
+
+	if (g_abKeyPressed[K_ONE])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_ONE;
+			d1 = 1;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_ONE;
+			d2 = 1;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_TWO])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_TWO;
+			d1 = 2;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_TWO;
+			d2 = 2;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_THREE])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_THREE;
+			d1 = 3;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_THREE;
+			d2 = 3;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_FOUR])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_FOUR;
+			d1 = 4;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_FOUR;
+			d2 = 4;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_FIVE])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_FIVE;
+			d1 = 5;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_FIVE;
+			d2 = 5;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_SIX])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_SIX;
+			d1 = 6;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_SIX;
+			d2 = 6;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_SEVEN])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_SEVEN;
+			d1 = 7;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_SEVEN;
+			d2 = 7;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_EIGHT])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_EIGHT;
+			d1 = 8;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_EIGHT;
+			d2 = 8;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_NINE])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_NINE;
+			d1 = 9;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_NINE;
+			d2 = 9;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_ZERO])
+	{
+		if (digit1 == NUM_NIL)
+		{
+			digit1 = NUM_ZERO;
+			d1 = 0;
+		}
+		if (digit2 == NUM_NIL)
+		{
+			digit2 = NUM_ZERO;
+			d2 = 0;
+		}
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_BACKSPACE])
+	{
+		if ((digit1 != NUM_NIL)&(digit2 != NUM_NIL)) // if both filled
+			digit2 = NUM_NIL;
+		if ((digit1 != NUM_NIL)&(digit2 == NUM_NIL)) //if only digit 1 digit filled.
+			digit1 = NUM_NIL;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_ENTER])
+	{
+		if ((d1 == NULL) &(d2 == NULL))
+		{
+			puzzle1Input = 0;
+		}
+		if ((d2 == NULL)&(d1 == NULL))
+		{
+			puzzle1Input = d1;
+		}
+		if ((d1 != NULL)&(d2 != NULL))
+		{
+			puzzle1Input = d1*d2;
+		}
+		//now check answer.
+		puzzle1Ans = puzzle1Integer1*puzzle1Integer2;
+		if (puzzle1Input != puzzle1Ans) //wrong ans
+			g_eGameState = S_SPLASHSCREEN; //output for now, in future replace with a more suitable sequence.
+		if (puzzle1Ans == puzzle1Input)// correct answer
+			g_eGameState = S_GAME;
+		bSomethingHappened = true;
+	}
+
+	//if (g_abKeyPressed[K_ESCAPE])
+	//{
+	//	g_eGameState = S_SPLASHSCREEN;
+	//	bSomethingHappened = true;
+	//}
+
+
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.25;
+	}
+
 }
