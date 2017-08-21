@@ -41,10 +41,11 @@ enum EKEYS
 // Enumeration for the different screen states
 enum EGAMESTATES
 {
-    S_SPLASHSCREEN,
-    S_GAME,
+	S_SPLASHSCREEN,
+	S_GAME,
 	S_LEVELSELECT,
 	S_CHARACTERCOLOR,
+	S_ENCOUNTERMONSTER,
 	S_COUNT
 };
 
@@ -66,6 +67,19 @@ enum MON_IDLE
 	MON_RIGHT
 };
 
+enum P1_NUMBER {
+	NUM_ZERO,
+	NUM_ONE,
+	NUM_TWO,
+	NUM_THREE,
+	NUM_FOUR,
+	NUM_FIVE,
+	NUM_SIX,
+	NUM_SEVEN,
+	NUM_EIGHT,
+	NUM_NINE,
+	NUM_NIL
+};
 // struct for the game character
 struct SGameChar
 {
@@ -101,4 +115,10 @@ void monsterAI();			// The monster's actions
 void monsterLOC();			// renders all monsters' location
 void monsterONE();			// monster number 1 position and looks
 void loadMap();				// loads text file into array
+
+void renderEncounterMonster();
+void renderMonster();
+void monsterPuzzle();
+void renderMonsterPuzzle();
 #endif // _GAME_H
+
