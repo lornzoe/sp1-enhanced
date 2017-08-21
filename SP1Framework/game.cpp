@@ -589,13 +589,13 @@ void monsterLOC()
 	monsterONE();
 }
 
-void monsterONE()
+void monsterONE()	
 {
 	g_Console.writeToBuffer(monONE, "M", 0x0C);
 }
 
 
-void monsterAI()
+void monsterAI()	// base code for how monster acts
 {
 	MON_IDLE currentMOV;
 	currentMOV = monsterIDLEMOV();
@@ -668,6 +668,10 @@ void monsterAI()
 				break;
 			}
 		}
+		if (monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y)	// When monster touches player
+		{
+			init();
+		}
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
@@ -676,7 +680,7 @@ void monsterAI()
 	
 }
 
-void monsterCHASE()
+void monsterCHASE()	// code for monster to chase down the player
 {
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
@@ -704,31 +708,31 @@ void monsterCHASE()
 		bSomethingHappened = true;
 	}
 }
-MON_IDLE monsterIDLEMOV()
+MON_IDLE monsterIDLEMOV()	// When monster is not near the player
 {
 	MON_IDLE MON_MOVEMENT = MON_NOTHING;
 
 
 	int monz;
-	monz = rand() % 10000;
+	monz = rand() % 10000;			//using randomiser
 
-	if (monz <= 1500)
+	if (monz <= 1900)
 	{
 		MON_MOVEMENT = MON_NOTHING;
 	}
-	else if (monz <= 3500 && monz > 1500)
+	else if (monz <= 3925 && monz > 1900)
 	{
 		MON_MOVEMENT = MON_UP;
 	}
-	else if (monz <= 6000 && monz > 3500)
+	else if (monz <= 5950 && monz > 3925)
 	{
 		MON_MOVEMENT = MON_DOWN;
 	}
-	else if (monz <= 8500 && monz > 6000)
+	else if (monz <= 7975 && monz > 5950)
 	{
 		MON_MOVEMENT = MON_LEFT;
 	}
-	else if (monz <= 10000 && monz > 8500)
+	else if (monz <= 10000 && monz > 7975)
 	{
 		MON_MOVEMENT = MON_RIGHT;
 	}
