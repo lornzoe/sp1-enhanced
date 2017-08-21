@@ -65,6 +65,7 @@ void init( void )
 	monONE.Y = (g_Console.getConsoleSize().Y / 2);
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
+	PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
 }
 
 //--------------------------------------------------------------
@@ -378,6 +379,7 @@ void processUserInput()
 		g_eGameState = S_SPLASHSCREEN;
 		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
 		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+		PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
 		bSomethingHappened = true;
 	}
 
@@ -422,8 +424,6 @@ void renderSplashScreen()  // renders the splash screen
 	g_Console.writeToBuffer(c, "|   |   ||     ||  |  ||     ||     ||     ||     ||     ||     |", 0x02);
 	c.Y += 1;
 	g_Console.writeToBuffer(c, "|___|___| \\___/ |__|__| \\__,_||_____||_____||_____||_____||_____|", 0x02);
-	PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
-	system("pause>nul");
 }
 
 

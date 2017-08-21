@@ -4,6 +4,7 @@
 #define MON_DETECT_RANGE_X 15
 #define MON_DETECT_RANGE_Y 5
 #define BLANK_SPACE 48
+#define WALL 49
 
 #include "Framework\timer.h"
 #include <fstream>
