@@ -511,7 +511,7 @@ void renderMap()
 	for (int r = 0; r < 25; r++) {
 		for (int c = 0; c < 80; c++) {
 			if(map[r][c] == 49) {
-				g_Console.writeToBuffer(c, r, "|", 0x07);
+				g_Console.writeToBuffer(c, r, (char)219, 0x07);
 			}
 		}
 	}
@@ -608,31 +608,13 @@ void monsterAI()
 		if ( (monONE.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (monONE.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (monONE.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (monONE.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)) )			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
 		{
 			
-			if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
-			{
-				monONE.X++;
-				bSomethingHappened = true;
-			}
-			if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X - 1]) == BLANK_SPACE)
-			{
-				monONE.X--;
-				bSomethingHappened = true;
-			}
-			if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
-			{
-				monONE.Y--;
-				bSomethingHappened = true;
-			}
-			if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y + 1][monONE.X]) == BLANK_SPACE)
-			{
-				monONE.Y++;
-				bSomethingHappened = true;
-			}
+			monsterCHASE();
 		}
 		else
 		{
 			switch (currentMOV) {
 			case MON_NOTHING:
+				monsterCHASE();
 				break;
 			case MON_UP:
 				if ( (monONE.Y > 0) && (map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
@@ -694,6 +676,34 @@ void monsterAI()
 	
 }
 
+void monsterCHASE()
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+	{
+		return;
+	}
+	if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
+	{
+		monONE.X++;
+		bSomethingHappened = true;
+	}
+	if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X - 1]) == BLANK_SPACE)
+	{
+		monONE.X--;
+		bSomethingHappened = true;
+	}
+	if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
+	{
+		monONE.Y--;
+		bSomethingHappened = true;
+	}
+	if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y + 1][monONE.X]) == BLANK_SPACE)
+	{
+		monONE.Y++;
+		bSomethingHappened = true;
+	}
+}
 MON_IDLE monsterIDLEMOV()
 {
 	MON_IDLE MON_MOVEMENT = MON_NOTHING;
@@ -702,11 +712,11 @@ MON_IDLE monsterIDLEMOV()
 	int monz;
 	monz = rand() % 10000;
 
-	if (monz <= 1000)
+	if (monz <= 1500)
 	{
 		MON_MOVEMENT = MON_NOTHING;
 	}
-	else if (monz <= 3500 && monz > 1000)
+	else if (monz <= 3500 && monz > 1500)
 	{
 		MON_MOVEMENT = MON_UP;
 	}
