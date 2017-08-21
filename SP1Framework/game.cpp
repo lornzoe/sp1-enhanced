@@ -30,7 +30,9 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 ELEVELS g_currentlevel;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 WORD charColor = 0x02; // initialise character colour
-COORD monONE;
+
+COORD monONE;		//monster one
+COORD monTWO;		//monster two
 
 int puzzle1Integer1 = rand() % 10 + 1;
 int puzzle1Integer2 = rand() % 10 + 1;
@@ -67,11 +69,14 @@ void init( void )
 
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
-    g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
+    g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 1;
     g_sChar.m_bActive = true;
 
 	monONE.X = (g_Console.getConsoleSize().X / 2 - 35);
-	monONE.Y = (g_Console.getConsoleSize().Y / 2);
+	monONE.Y = (g_Console.getConsoleSize().Y / 2 - 5);
+	monTWO.X = (g_Console.getConsoleSize().X / 2 + 36);
+	monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 10);
+
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
 	PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -586,16 +591,17 @@ void renderToScreen()
 
 void monsterLOC()
 {
-	monsterONE();
+	monsterALL();
 }
 
-void monsterONE()	
+void monsterALL()	
 {
 	g_Console.writeToBuffer(monONE, "M", 0x0C);
+	g_Console.writeToBuffer(monTWO, "M", 0x0C);
 }
 
 
-void monsterAI()	// base code for how monster acts
+void monsterAI()	// base code for how monster  acts
 {
 	MON_IDLE currentMOV;
 	currentMOV = monsterIDLEMOV();
@@ -605,6 +611,8 @@ void monsterAI()	// base code for how monster acts
 		{
 			return;
 		}
+
+		//Monster 1
 		if ( (monONE.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (monONE.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (monONE.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (monONE.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)) )			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
 		{
 			
@@ -631,9 +639,9 @@ void monsterAI()	// base code for how monster acts
 			case MON_DOWN:
 				if ( (monONE.Y < g_Console.getConsoleSize().Y - 1) && (map[monONE.Y + 1][monONE.X]) == BLANK_SPACE)
 				{
-					monONE.Y++;
-					bSomethingHappened = true;
-					break;
+				monONE.Y++;
+				bSomethingHappened = true;
+				break;
 				}
 				else
 				{
@@ -641,7 +649,7 @@ void monsterAI()	// base code for how monster acts
 					break;
 				}
 			case MON_LEFT:
-				if ( (monONE.X > 0) && (map[monONE.Y][monONE.X - 1]) == BLANK_SPACE)
+				if ((monONE.X > 0) && (map[monONE.Y][monONE.X - 1]) == BLANK_SPACE)
 				{
 					monONE.X--;
 					bSomethingHappened = true;
@@ -653,13 +661,13 @@ void monsterAI()	// base code for how monster acts
 					break;
 				}
 			case MON_RIGHT:
-				if ( (monONE.X < (g_Console.getConsoleSize().X + 79)) && (map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
+				if ((monONE.X < (g_Console.getConsoleSize().X + 79)) && (map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
 				{
 					monONE.X++;
 					bSomethingHappened = true;
 					break;
 				}
-				else 
+				else
 				{
 					bSomethingHappened = true;
 					break;
@@ -672,12 +680,82 @@ void monsterAI()	// base code for how monster acts
 		{
 			init();
 		}
+
+		//Monster 2
+		if ((monTWO.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (monTWO.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (monTWO.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (monTWO.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
+		{
+
+			monsterCHASE();
+		}
+		else
+		{
+			switch (currentMOV) {
+			case MON_NOTHING:
+				monsterCHASE();
+				break;
+			case MON_UP:
+				if ((monTWO.Y > 0) && (map[monTWO.Y - 1][monTWO.X]) == BLANK_SPACE)
+				{
+					monTWO.Y--;
+					bSomethingHappened = true;
+					break;
+				}
+				else
+				{
+					bSomethingHappened = true;
+					break;
+				}
+			case MON_DOWN:
+				if ((monTWO.Y < g_Console.getConsoleSize().Y - 1) && (map[monTWO.Y + 1][monTWO.X]) == BLANK_SPACE)
+				{
+					monTWO.Y++;
+					bSomethingHappened = true;
+					break;
+				}
+				else
+				{
+					bSomethingHappened = true;
+					break;
+				}
+			case MON_LEFT:
+				if ((monTWO.X > 0) && (map[monTWO.Y][monTWO.X - 1]) == BLANK_SPACE)
+				{
+					monTWO.X--;
+					bSomethingHappened = true;
+					break;
+				}
+				else
+				{
+					bSomethingHappened = true;
+					break;
+				}
+			case MON_RIGHT:
+				if ((monTWO.X < (g_Console.getConsoleSize().X + 79)) && (map[monTWO.Y][monTWO.X + 1]) == BLANK_SPACE)
+				{
+					monTWO.X++;
+					bSomethingHappened = true;
+					break;
+				}
+				else
+				{
+					bSomethingHappened = true;
+					break;
+				}
+			default:
+				break;
+			}
+		}
+		if (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y)	// When monster touches player
+		{
+			init();
+		}
+
 		if (bSomethingHappened)
 		{
 			// set the bounce time to some time in the future to prevent accidental triggers
 			g_dBounceTime = g_dElapsedTime + 0.08;
 		}
-	
+
 }
 
 void monsterCHASE()	// code for monster to chase down the player
@@ -687,25 +765,297 @@ void monsterCHASE()	// code for monster to chase down the player
 	{
 		return;
 	}
+
+	/* Monster 1 */
 	if (monONE.X <= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
 	{
-		monONE.X++;
-		bSomethingHappened = true;
+		if ((map[monONE.Y][monONE.X + 1]) == WALL)		// allows monster to somewhat walk around WALLS
+		{
+			if ((map[monONE.Y + 1][monONE.X]) == WALL)
+			{
+				if ((map[monONE.Y][monONE.X - 1]) == WALL)
+				{
+					if ((map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
+					{
+						monONE.Y--;
+						bSomethingHappened = true;
+					}
+					else
+					{
+						bSomethingHappened = true;
+					}
+				}
+				else
+				{
+					monONE.X--;
+					bSomethingHappened = true;
+				}
+			}
+			else
+			{
+				monONE.Y++;
+				bSomethingHappened = true;
+			}
+		}
+		else
+		{
+			monONE.X++;
+			bSomethingHappened = true;
+		}
 	}
 	if (monONE.X >= g_sChar.m_cLocation.X && monONE.X != g_sChar.m_cLocation.X && (map[monONE.Y][monONE.X - 1]) == BLANK_SPACE)
 	{
-		monONE.X--;
-		bSomethingHappened = true;
+		if ((map[monONE.Y][monONE.X - 1]) == WALL)		// allows monster to somewhat walk around WALLS
+		{
+			if ((map[monONE.Y - 1][monONE.X]) == WALL)
+			{
+				if ((map[monONE.Y + 1][monONE.X]) == WALL)
+				{
+					if ((map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
+					{
+						monONE.X++;
+						bSomethingHappened = true;
+					}
+					else
+					{
+						bSomethingHappened = true;
+					}
+				}
+				else
+				{
+					monONE.Y++;
+					bSomethingHappened = true;
+				}
+			}
+			else
+			{
+				monONE.Y--;
+				bSomethingHappened = true;
+			}
+		}
+		else
+		{
+			monONE.X--;
+			bSomethingHappened = true;
+		}
 	}
 	if (monONE.Y >= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
 	{
-		monONE.Y--;
-		bSomethingHappened = true;
+		if ((map[monONE.Y - 1][monONE.X]) == WALL)		// allows monster to somewhat walk around WALLS
+		{
+			if ((map[monONE.Y][monONE.X + 1]) == WALL)
+			{
+				if ((map[monONE.Y][monONE.X - 1]) == WALL)
+				{
+					if ((map[monONE.Y + 1][monONE.X]) == BLANK_SPACE)
+					{
+						monONE.Y++;
+						bSomethingHappened = true;
+					}
+					else
+					{
+						bSomethingHappened = true;
+					}
+				}
+				else
+				{
+					monONE.X--;
+					bSomethingHappened = true;
+				}
+			}
+			else
+			{
+				monONE.X++;
+				bSomethingHappened = true;
+			}
+		}
+		else
+		{
+			monONE.Y--;
+			bSomethingHappened = true;
+		}
 	}
 	if (monONE.Y <= g_sChar.m_cLocation.Y && monONE.Y != g_sChar.m_cLocation.Y && (map[monONE.Y + 1][monONE.X]) == BLANK_SPACE)
 	{
-		monONE.Y++;
-		bSomethingHappened = true;
+		if ((map[monONE.Y + 1][monONE.X]) == WALL)		// allows monster to somewhat walk around WALLS
+		{
+			if ((map[monONE.Y][monONE.X - 1]) == WALL)
+			{
+				if ((map[monONE.Y][monONE.X + 1]) == WALL)
+				{
+					if ((map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
+					{
+						monONE.Y--;
+						bSomethingHappened = true;
+					}
+					else
+					{
+						bSomethingHappened = true;
+					}
+				}
+				else
+				{
+					monONE.X++;
+					bSomethingHappened = true;
+				}
+			}
+			else
+			{
+				monONE.X--;
+				bSomethingHappened = true;
+			}
+		}
+		else
+		{
+			monONE.Y++;
+			bSomethingHappened = true;
+		}
+	}
+
+	/* Monster 2 */
+	if (monTWO.X <= g_sChar.m_cLocation.X && monTWO.X != g_sChar.m_cLocation.X && (map[monTWO.Y][monTWO.X + 1]) == BLANK_SPACE)
+	{
+		if ((map[monTWO.Y][monTWO.X + 1]) == WALL)		// allows monster to somewhat walk around WALLS
+		{
+			if ((map[monTWO.Y + 1][monTWO.X]) == WALL)
+			{
+				if ((map[monTWO.Y][monTWO.X - 1]) == WALL)
+				{
+					if ((map[monTWO.Y - 1][monTWO.X]) == BLANK_SPACE)
+					{
+						monTWO.Y--;
+						bSomethingHappened = true;
+					}
+					else
+					{
+						bSomethingHappened = true;
+					}
+				}
+				else
+				{
+					monTWO.X--;
+					bSomethingHappened = true;
+				}
+			}
+			else
+			{
+				monTWO.Y++;
+				bSomethingHappened = true;
+			}
+		}
+		else
+		{
+			monTWO.X++;
+			bSomethingHappened = true;
+		}
+	}
+	if (monTWO.X >= g_sChar.m_cLocation.X && monTWO.X != g_sChar.m_cLocation.X && (map[monTWO.Y][monTWO.X - 1]) == BLANK_SPACE)
+	{
+		if ((map[monTWO.Y][monTWO.X - 1]) == WALL)		// allows monster to somewhat walk around WALLS
+		{
+			if ((map[monTWO.Y - 1][monTWO.X]) == WALL)
+			{
+				if ((map[monTWO.Y + 1][monTWO.X]) == WALL)
+				{
+					if ((map[monTWO.Y][monTWO.X + 1]) == BLANK_SPACE)
+					{
+						monTWO.X++;
+						bSomethingHappened = true;
+					}
+					else
+					{
+						bSomethingHappened = true;
+					}
+				}
+				else
+				{
+					monTWO.Y++;
+					bSomethingHappened = true;
+				}
+			}
+			else
+			{
+				monTWO.Y--;
+				bSomethingHappened = true;
+			}
+		}
+		else
+		{
+			monTWO.X--;
+			bSomethingHappened = true;
+		}
+	}
+	if (monTWO.Y >= g_sChar.m_cLocation.Y && monTWO.Y != g_sChar.m_cLocation.Y && (map[monTWO.Y - 1][monTWO.X]) == BLANK_SPACE)
+	{
+		if ((map[monTWO.Y - 1][monTWO.X]) == WALL)		// allows monster to somewhat walk around WALLS
+		{
+			if ((map[monTWO.Y][monTWO.X + 1]) == WALL)
+			{
+				if ((map[monTWO.Y][monTWO.X - 1]) == WALL)
+				{
+					if ((map[monTWO.Y + 1][monTWO.X]) == BLANK_SPACE)
+					{
+						monTWO.Y++;
+						bSomethingHappened = true;
+					}
+					else
+					{
+						bSomethingHappened = true;
+					}
+				}
+				else
+				{
+					monTWO.X--;
+					bSomethingHappened = true;
+				}
+			}
+			else
+			{
+				monTWO.X++;
+				bSomethingHappened = true;
+			}
+		}
+		else
+		{
+			monTWO.Y--;
+			bSomethingHappened = true;
+		}
+	}
+	if (monTWO.Y <= g_sChar.m_cLocation.Y && monTWO.Y != g_sChar.m_cLocation.Y && (map[monTWO.Y + 1][monTWO.X]) == BLANK_SPACE)
+	{
+		if ((map[monTWO.Y + 1][monTWO.X]) == WALL)		// allows monster to somewhat walk around WALLS
+		{
+			if ((map[monTWO.Y][monTWO.X - 1]) == WALL)
+			{
+				if ((map[monTWO.Y][monTWO.X + 1]) == WALL)
+				{
+					if ((map[monTWO.Y - 1][monTWO.X]) == BLANK_SPACE)
+					{
+						monTWO.Y--;
+						bSomethingHappened = true;
+					}
+					else
+					{
+						bSomethingHappened = true;
+					}
+				}
+				else
+				{
+					monTWO.X++;
+					bSomethingHappened = true;
+				}
+			}
+			else
+			{
+				monTWO.X--;
+				bSomethingHappened = true;
+			}
+		}
+		else
+		{
+			monTWO.Y++;
+			bSomethingHappened = true;
+		}
 	}
 }
 MON_IDLE monsterIDLEMOV()	// When monster is not near the player
