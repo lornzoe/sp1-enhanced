@@ -369,25 +369,25 @@ void moveCharacter()
 
     // Updating the location of the character based on the key press
     // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) == BLANK_SPACE)
+    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) != WALL)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y--;
         bSomethingHappened = true;
     }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) == BLANK_SPACE)
+    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != WALL)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X--;
         bSomethingHappened = true;
     }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) == BLANK_SPACE)
+    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != WALL)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.Y++;
         bSomethingHappened = true;
 	}
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) == BLANK_SPACE)
+    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != WALL)
     {
         //Beep(1440, 30);
         g_sChar.m_cLocation.X++;
@@ -425,22 +425,32 @@ void processUserInput()
 		switch (g_currentlevel) {
 			case L_LEVELONE:
 				g_currentlevel = L_LEVELTWO;
+				levelChange = true;
 				resetPos();
+				bSomethingHappened = true;
 				break;
 			case L_LEVELTWO:
 				g_currentlevel = L_LEVELTHREE;
+				levelChange = true;
 				resetPos();
+				bSomethingHappened = true;
 				break;
 			case L_LEVELTHREE:
 				g_currentlevel = L_LEVELFOUR;
+				levelChange = true;
 				resetPos();
+				bSomethingHappened = true;
 				break;
 			case L_LEVELFOUR:
 				g_currentlevel = L_LEVELFIVE;
+				levelChange = true;
 				resetPos();
+				bSomethingHappened = true;
 				break;
 			case L_LEVELFIVE:
 				g_eGameState = S_WINSCREEN;
+				levelChange = true;
+				bSomethingHappened = true;
 				break;
 
 		}
@@ -793,7 +803,7 @@ void monsterAI()	// base code for how monster  acts
 			init();
 		}
 // monster speed
-		monsterSPEED = g_dElapsedTime + 0.06;
+		monsterSPEED = g_dElapsedTime + 0.25;
 	}
 
 }
