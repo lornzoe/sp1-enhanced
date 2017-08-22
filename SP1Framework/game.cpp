@@ -75,7 +75,7 @@ void init( void )
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 1;
-    //g_sChar.m_bActive = true;
+    g_sChar.m_hasKey = false;
 
 	monONE.X = (g_Console.getConsoleSize().X / 2 - 35);
 	monONE.Y = (g_Console.getConsoleSize().Y / 2 - 5);
@@ -376,6 +376,26 @@ void gameplay()            // gameplay logic
 	monsterAI();       // moves the monster to the player's character's location
 }
 
+bool isSolid(int x, int y) {
+	switch (map[y][x]) {
+		case WALL: 
+		case ICE:
+			return true;
+			break;
+		case GATE:
+			if (!g_sChar.m_hasKey) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			break;
+		default:
+			return false;
+			break;
+		
+	}
+}
 
 void moveCharacter()
 {
@@ -383,37 +403,62 @@ void moveCharacter()
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
-	// Updating the location of the character based on the key press
-	// providing a beep sound whenver we shift the character
-	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) != WALL && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) != ICE)
-	{
-		//Beep(1440, 30);
-		g_sChar.m_cLocation.Y--;
+	COORD target;
+	bool keyPressed = false;
+	if (g_abKeyPressed[K_UP]) {
+		target.X = g_sChar.m_cLocation.X;
+		target.Y = g_sChar.m_cLocation.Y - 1;
+		keyPressed = true;
+	}
+	if (g_abKeyPressed[K_LEFT]) {
+		target.X = g_sChar.m_cLocation.X - 1;
+		target.Y = g_sChar.m_cLocation.Y;
+		keyPressed = true;
+	}
+	if (g_abKeyPressed[K_DOWN]) {
+		target.X = g_sChar.m_cLocation.X;
+		target.Y = g_sChar.m_cLocation.Y + 1;
+		keyPressed = true;
+	}
+	if (g_abKeyPressed[K_RIGHT]) {
+		target.X = g_sChar.m_cLocation.X + 1;
+		target.Y = g_sChar.m_cLocation.Y;
+		keyPressed = true;
+	}
+	
+	if (keyPressed && !isSolid(target.X, target.Y)) {
+		g_sChar.m_cLocation.X = target.X;
+		g_sChar.m_cLocation.Y = target.Y;
 		bSomethingHappened = true;
 	}
-	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != WALL && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != ICE)
-	{
-		//Beep(1440, 30);
-		g_sChar.m_cLocation.X--;
-		bSomethingHappened = true;
-	}
-	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != WALL && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != ICE)
-	{
-		//Beep(1440, 30);
-		g_sChar.m_cLocation.Y++;
-		bSomethingHappened = true;
-	}
-	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != WALL && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != ICE)
-	{
-		//Beep(1440, 30);
-		g_sChar.m_cLocation.X++;
-		bSomethingHappened = true;
-	}
-	if (g_abKeyPressed[K_SPACE])
-	{
-		g_sChar.m_bActive = !g_sChar.m_bActive;
-		bSomethingHappened = true;
-	}
+
+	//// Updating the location of the character based on the key press
+	//// providing a beep sound whenver we shift the character
+	//if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && !isSolid(g_sChar.m_cLocation.X))
+	//{	
+	//	//Beep(1440, 30);
+	//	g_sChar.m_cLocation.Y--;
+	//	bSomethingHappened = true;
+	//}
+	//if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != WALL && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != ICE)
+	//{
+	//	//Beep(1440, 30);
+	//	g_sChar.m_cLocation.X--;
+	//	bSomethingHappened = true;
+	//}
+	//if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != WALL && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != ICE)
+	//{
+	//	//Beep(1440, 30);
+	//	g_sChar.m_cLocation.Y++;
+	//	bSomethingHappened = true;
+	//}
+	//if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != WALL && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != ICE)
+	//{
+	//	//Beep(1440, 30);
+	//	g_sChar.m_cLocation.X++;
+	//	bSomethingHappened = true;
+	//}
+	//
 	// ice sliding logic ; if you walk on ice, you're on a loop until you hit a wall/gate.
 
 
@@ -603,6 +648,15 @@ void processUserInput()
 		}
 	}
 
+	if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] == KEY) {
+		g_sChar.m_hasKey = true;
+		map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] = BLANK_SPACE;
+	}
+
+	if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] == GATE) {
+		map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] = BLANK_SPACE;
+	}
+
 	if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
@@ -720,6 +774,12 @@ void renderMap()
 				case ENDPOINT: g_Console.writeToBuffer(c, r, (char)219, 0x05);
 					break;
 				case ICE: g_Console.writeToBuffer(c, r, (char)176, 0x07);
+					break;
+				case KEY: g_Console.writeToBuffer(c, r, (char)219, 0x02);
+					break;
+				case GATE: g_Console.writeToBuffer(c, r, (char)219, 0x04);
+					break;
+
 			}
 		}
 	}
@@ -957,7 +1017,7 @@ switch (MONS_NUM) {
 		return;
 	}
 	// monster speed
-	monsterSPEED = g_dElapsedTime + 0.03;
+	monsterSPEED = g_dElapsedTime + 0.1;
 
 	}
 	if ((monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y) || (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y))	// When monster touches player

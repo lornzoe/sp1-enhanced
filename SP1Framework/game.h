@@ -7,6 +7,8 @@
 #define WALL 49
 #define ENDPOINT 50
 #define ICE 51
+#define KEY 52
+#define GATE 53
 
 #include "Framework\timer.h"
 #include <fstream>
@@ -109,7 +111,7 @@ enum SLIDE_DIRECTION {
 struct SGameChar
 {
     COORD m_cLocation;
-    bool  m_bActive;
+    bool  m_hasKey;
 };
 
 
@@ -148,6 +150,7 @@ void loadMap();				// loads text file into array
 void winscreen();			// logic for winscreen
 void winscreenRender();		// renders winscreen
 void resetPos();			// resets position of all entities
+bool isSolid(int x, int y);				// returns false if can move into coordinate and and true if cannot
 
 void renderEncounterMonster();
 void renderMonster();
