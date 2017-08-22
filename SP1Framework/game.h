@@ -5,6 +5,7 @@
 #define MON_DETECT_RANGE_Y 5
 #define BLANK_SPACE 48
 #define WALL 49
+#define ENDPOINT 50
 
 #include "Framework\timer.h"
 #include <fstream>
@@ -46,6 +47,7 @@ enum EGAMESTATES
 	S_LEVELSELECT,
 	S_CHARACTERCOLOR,
 	S_ENCOUNTERMONSTER,
+	S_WINSCREEN,
 	S_COUNT
 };
 
@@ -116,6 +118,9 @@ void monsterLOC();			// renders all monsters' location
 void monsterALL();			// monster number 1 position and looks
 void monsterCHASE();		// monster chasing player function
 void loadMap();				// loads text file into array
+void winscreen();			// logic for winscreen
+void winscreenRender();		// renders winscreen
+void resetPos();			// resets position of all entities
 
 void renderEncounterMonster();
 void renderMonster();

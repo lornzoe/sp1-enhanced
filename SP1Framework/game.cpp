@@ -72,7 +72,7 @@ void init( void )
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 1;
-    g_sChar.m_bActive = true;
+    //g_sChar.m_bActive = true;
 
 	monONE.X = (g_Console.getConsoleSize().X / 2 - 35);
 	monONE.Y = (g_Console.getConsoleSize().Y / 2 - 5);
@@ -164,6 +164,8 @@ void update(double dt)
 			break;
 		case S_ENCOUNTERMONSTER: monsterPuzzle();
 			break;
+		case S_WINSCREEN: winscreen();
+			break;
     }
 }
 //--------------------------------------------------------------
@@ -189,6 +191,8 @@ void render()
 			break;
 		case S_ENCOUNTERMONSTER: renderEncounterMonster();
 			break;
+		case S_WINSCREEN: winscreenRender();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -197,6 +201,15 @@ void render()
 void splashScreenWait() {
 	//if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
 	// g_eGameState = S_GAME;
+}
+
+void resetPos() {
+	g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
+	g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 1;
+	monONE.X = (g_Console.getConsoleSize().X / 2 - 35);
+	monONE.Y = (g_Console.getConsoleSize().Y / 2 - 5);
+	monTWO.X = (g_Console.getConsoleSize().X / 2 + 36);
+	monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 10);
 }
 
 void splashScreenSelect()    // waits for time to pass in splash screen
@@ -336,6 +349,10 @@ void charactercolourselect() {
 	}
 }
 
+void winscreen() {
+	init();
+}
+
 void gameplay()            // gameplay logic
 {
     processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
@@ -404,6 +421,30 @@ void processUserInput()
 		PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
 		bSomethingHappened = true;
 	}
+	if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] == ENDPOINT) {
+		switch (g_currentlevel) {
+			case L_LEVELONE:
+				g_currentlevel = L_LEVELTWO;
+				resetPos();
+				break;
+			case L_LEVELTWO:
+				g_currentlevel = L_LEVELTHREE;
+				resetPos();
+				break;
+			case L_LEVELTHREE:
+				g_currentlevel = L_LEVELFOUR;
+				resetPos();
+				break;
+			case L_LEVELFOUR:
+				g_currentlevel = L_LEVELFIVE;
+				resetPos();
+				break;
+			case L_LEVELFIVE:
+				g_eGameState = S_WINSCREEN;
+				break;
+
+		}
+	}
 
 	if (bSomethingHappened)
     {
@@ -448,6 +489,9 @@ void renderSplashScreen()  // renders the splash screen
 	g_Console.writeToBuffer(c, "|___|___| \\___/ |__|__| \\__,_||_____||_____||_____||_____||_____|", 0x02);
 }
 
+void winscreenRender() {
+	//TODO
+}
 
 void renderGame()
 {
@@ -513,8 +557,11 @@ void renderMap()
 {
 	for (int r = 0; r < 25; r++) {
 		for (int c = 0; c < 80; c++) {
-			if(map[r][c] == 49) {
-				g_Console.writeToBuffer(c, r, (char)219, 0x07);
+			switch (map[r][c]) {
+				case WALL: g_Console.writeToBuffer(c, r, (char)219, 0x07);
+					break;
+				case ENDPOINT: g_Console.writeToBuffer(c, r, (char)219, 0x05);
+					break;
 			}
 		}
 	}
