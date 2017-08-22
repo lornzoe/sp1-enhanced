@@ -565,10 +565,7 @@ void processUserInput()
     // exits back to level select if escape is pressed
 	if (g_abKeyPressed[K_ESCAPE])
 	{
-		g_eGameState = S_SPLASHSCREEN;
-		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
-		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
-		PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
+		init();
 		bSomethingHappened = true;
 	}
 	if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] == ENDPOINT) {
