@@ -6,6 +6,7 @@
 #define BLANK_SPACE 48
 #define WALL 49
 #define ENDPOINT 50
+#define ICE 51
 
 #include "Framework\timer.h"
 #include <fstream>
@@ -86,6 +87,14 @@ enum P1_NUMBER {
 	NUM_NINE,
 	NUM_NIL
 };
+
+enum SLIDE_DIRECTION {
+	D_NONE,
+	D_UP,
+	D_DOWN,
+	D_LEFT,
+	D_RIGHT
+};
 // struct for the game character
 struct SGameChar
 {
@@ -109,6 +118,8 @@ void charactercolourselect();	//handles logic for character colour select screen
 void renderLevelSelect();	// handles renderlevelselectBG
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
+void moveCharacterICE();	// handles (exclusive) ice movement.
+void slideICE();			// handles logic-side of ice movement.
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen

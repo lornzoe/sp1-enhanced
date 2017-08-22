@@ -19,6 +19,7 @@ using namespace std;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double monsterSPEED;
+double iceSPEED;
 bool    g_abKeyPressed[K_COUNT];
 
 
@@ -44,6 +45,7 @@ int d2 = NULL;
 P1_NUMBER digit1 = NUM_NIL;
 P1_NUMBER digit2 = NUM_NIL;
 
+SLIDE_DIRECTION directionICE = D_NONE;
 
 // Console object
 Console g_Console(80, 25, "Monuzzled");
@@ -65,6 +67,7 @@ void init( void )
     g_dElapsedTime = 0.0;
     g_dBounceTime = 0.0;
 	monsterSPEED = 0.0;
+	iceSPEED = 0.0;
 
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
@@ -355,56 +358,203 @@ void winscreen() {
 
 void gameplay()            // gameplay logic
 {
-    processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
+	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	loadMap();			// loads map into memory
-    moveCharacter();    // moves the character, collision detection, physics, etc
+
+	switch (directionICE)
+	{
+	case D_NONE:
+		moveCharacterICE();		// input for ice movement
+		moveCharacter(); 	    // moves the character, collision detection, physics, etc
+		break;
+
+	default: slideICE();		// logic for ice movement
+		break;
+	}
+
+
 	monsterAI();       // moves the monster to the player's character's location
 }
 
+
 void moveCharacter()
 {
-    bool bSomethingHappened = false;
-    if (g_dBounceTime > g_dElapsedTime)
-        return;
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
 
-    // Updating the location of the character based on the key press
-    // providing a beep sound whenver we shift the character
-    if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) != WALL)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.Y--;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != WALL)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.X--;
-        bSomethingHappened = true;
-    }
-    if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != WALL)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.Y++;
-        bSomethingHappened = true;
+	// Updating the location of the character based on the key press
+	// providing a beep sound whenver we shift the character
+	if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0 && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) != WALL && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) != ICE)
+	{
+		//Beep(1440, 30);
+		g_sChar.m_cLocation.Y--;
+		bSomethingHappened = true;
 	}
-    if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != WALL)
-    {
-        //Beep(1440, 30);
-        g_sChar.m_cLocation.X++;
-        bSomethingHappened = true;
+	if (g_abKeyPressed[K_LEFT] && g_sChar.m_cLocation.X > 0 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != WALL && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != ICE)
+	{
+		//Beep(1440, 30);
+		g_sChar.m_cLocation.X--;
+		bSomethingHappened = true;
 	}
-    if (g_abKeyPressed[K_SPACE])
-    {
-        g_sChar.m_bActive = !g_sChar.m_bActive;
-        bSomethingHappened = true;
-    }
+	if (g_abKeyPressed[K_DOWN] && g_sChar.m_cLocation.Y < g_Console.getConsoleSize().Y - 1 && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != WALL && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != ICE)
+	{
+		//Beep(1440, 30);
+		g_sChar.m_cLocation.Y++;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1 && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != WALL && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != ICE)
+	{
+		//Beep(1440, 30);
+		g_sChar.m_cLocation.X++;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_SPACE])
+	{
+		g_sChar.m_bActive = !g_sChar.m_bActive;
+		bSomethingHappened = true;
+	}
+	// ice sliding logic ; if you walk on ice, you're on a loop until you hit a wall/gate.
 
-    if (bSomethingHappened)
-    {
-        // set the bounce time to some time in the future to prevent accidental triggers
-        g_dBounceTime = g_dElapsedTime + 0.08; 
-    }
+
+	//every time elapsed > speed, sequence triggers
+
+
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.15;
+	}
+
 }
+
+void moveCharacterICE()
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+
+	if (g_abKeyPressed[K_UP] && (map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) == ICE)
+	{
+		g_sChar.m_cLocation.Y--;
+		directionICE = D_UP;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_DOWN] && (map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) == ICE)
+	{
+		g_sChar.m_cLocation.Y++;
+		directionICE = D_DOWN;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_LEFT] && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) == ICE)
+	{
+		g_sChar.m_cLocation.X--;
+		directionICE = D_LEFT;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_RIGHT] && (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) == ICE)
+	{
+		g_sChar.m_cLocation.X++;
+		directionICE = D_RIGHT;
+		bSomethingHappened = true;
+	}
+
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.15;
+	}
+}
+
+void slideICE()
+{
+
+	if (iceSPEED < g_dElapsedTime)
+	{
+		switch (directionICE)
+		{
+		case D_UP:
+
+			if ((map[g_sChar.m_cLocation.Y - 1][g_sChar.m_cLocation.X]) != WALL)
+			{
+				g_sChar.m_cLocation.Y--;
+				if ((map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X]) == BLANK_SPACE)
+				{
+					directionICE = D_NONE;
+					break;
+				}
+				break;
+			}
+			else
+			{
+				directionICE = D_NONE;
+				break;
+			}
+
+		case D_DOWN:
+
+			if ((map[g_sChar.m_cLocation.Y + 1][g_sChar.m_cLocation.X]) != WALL)
+			{
+				g_sChar.m_cLocation.Y++;
+				if ((map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X]) == BLANK_SPACE)
+				{
+					directionICE = D_NONE;
+					break;
+				}
+				break;
+			}
+			else
+			{
+				directionICE = D_NONE;
+				break;
+			}
+
+		case D_LEFT:
+
+			if ((map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X - 1]) != WALL)
+			{
+				g_sChar.m_cLocation.X--;
+				if ((map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X]) == BLANK_SPACE)
+				{
+					directionICE = D_NONE;
+					break;
+				}
+				break;
+			}
+			else
+			{
+				directionICE = D_NONE;
+				break;
+			}
+
+		case D_RIGHT:
+
+			if ((map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X + 1]) != WALL)
+			{
+				g_sChar.m_cLocation.X++;
+				if ((map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X]) == BLANK_SPACE)
+				{
+					directionICE = D_NONE;
+					break;
+				}
+				break;
+			}
+			else
+			{
+				directionICE = D_NONE;
+				break;
+			}
+		default:
+			directionICE = D_NONE;
+			break;
+		}
+		iceSPEED = g_dElapsedTime + 0.05;
+	}
+
+
+}
+
 void processUserInput()
 {
 	bool bSomethingHappened = false;
@@ -572,6 +722,7 @@ void renderMap()
 					break;
 				case ENDPOINT: g_Console.writeToBuffer(c, r, (char)219, 0x05);
 					break;
+				case ICE: g_Console.writeToBuffer(c, r, (char)176, 0x07);
 			}
 		}
 	}
