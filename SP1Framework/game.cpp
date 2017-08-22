@@ -938,10 +938,7 @@ switch (MONS_NUM) {
 			}
 		}
 		
-		// monster speed
-		monsterSPEED = g_dElapsedTime + 0.06;
-
-	}
+	
 	if (MONS_NUM == monsONE)
 	{
 		monONE.X = MON_ALL.X;
@@ -958,6 +955,10 @@ switch (MONS_NUM) {
 	{
 		
 		return;
+	}
+	// monster speed
+	monsterSPEED = g_dElapsedTime + 0.03;
+
 	}
 	if ((monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y) || (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y))	// When monster touches player
 	{
@@ -1264,7 +1265,7 @@ void monsterCHASE()	// code for monster to chase down the player
 			}
 		}
 		
-		monsterSPEED = g_dElapsedTime + 0.06;
+		monsterSPEED = g_dElapsedTime + 0.03;
 	}
 }
 
