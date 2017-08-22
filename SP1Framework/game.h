@@ -82,6 +82,14 @@ enum P1_NUMBER {
 	NUM_NINE,
 	NUM_NIL
 };
+
+enum MON1_MOV {
+	MON1_UP,
+	MON1_DOWN,
+	MON1_LEFT,
+	MON1_RIGHT
+};
+
 // struct for the game character
 struct SGameChar
 {
