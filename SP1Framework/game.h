@@ -88,7 +88,6 @@ enum P1_NUMBER {
 	NUM_NIL
 };
 
-<<<<<<< HEAD
 enum MON1_MOV {
 	MON1_UP,
 	MON1_DOWN,
@@ -96,7 +95,6 @@ enum MON1_MOV {
 	MON1_RIGHT
 };
 
-=======
 enum SLIDE_DIRECTION {
 	D_NONE,
 	D_UP,
@@ -104,7 +102,6 @@ enum SLIDE_DIRECTION {
 	D_LEFT,
 	D_RIGHT
 };
->>>>>>> d45993bc0f4c00205a8c608f7aaab3e21910d672
 // struct for the game character
 struct SGameChar
 {

@@ -423,7 +423,7 @@ void moveCharacter()
 	if (bSomethingHappened)
 	{
 		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.15;
+		g_dBounceTime = g_dElapsedTime + 0.08;
 	}
 
 }
@@ -802,10 +802,11 @@ void monsterLOC()
 
 void monsterALL()	
 {
-	g_Console.writeToBuffer(monONE, "(^q^)", 0x0C);
+	g_Console.writeToBuffer(monONE, "M", 0x0C);
 	g_Console.writeToBuffer(monTWO, "M", 0x0C);
 }
 
+/*
 void monsterONE()
 {
 	MON1_MOV movANI;
@@ -850,7 +851,7 @@ void monsterONE()
 		}
 	
 	}
-
+	*/
 
 void monsterAI()	// base code for how monster  acts
 {
@@ -939,80 +940,7 @@ switch (MONS_NUM) {
 				break;
 			}
 		}
-		if (MON_ALL.X == g_sChar.m_cLocation.X && MON_ALL.Y == g_sChar.m_cLocation.Y)	// When monster touches player
-		{
-			init();
-		}
-
-		/*Monster 2
-		if ((monTWO.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (monTWO.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (monTWO.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (monTWO.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
-		{
-
-			monsterCHASE();
-		}
-		else
-		{
-			switch (currentMOV) {
-			case MON_NOTHING:
-				monsterCHASE();
-				break;
-			case MON_UP:
-				if ((monTWO.Y > 0) && (map[monTWO.Y - 1][monTWO.X]) == BLANK_SPACE)
-				{
-					monTWO.Y--;
-
-					break;
-				}
-				else
-				{
-
-					break;
-				}
-			case MON_DOWN:
-				if ((monTWO.Y < g_Console.getConsoleSize().Y - 1) && (map[monTWO.Y + 1][monTWO.X]) == BLANK_SPACE)
-				{
-					monTWO.Y++;
-
-					break;
-				}
-				else
-				{
-
-					break;
-				}
-			case MON_LEFT:
-				if ((monTWO.X > 0) && (map[monTWO.Y][monTWO.X - 1]) == BLANK_SPACE)
-				{
-					monTWO.X--;
-
-					break;
-				}
-				else
-				{
-
-					break;
-				}
-			case MON_RIGHT:
-				if ((monTWO.X < (g_Console.getConsoleSize().X + 79)) && (map[monTWO.Y][monTWO.X + 1]) == BLANK_SPACE)
-				{
-					monTWO.X++;
-
-					break;
-				}
-				else
-				{
-
-					break;
-				}
-			default:
-				break;
-			}
-		}
-		if (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y)	// When monster touches player
-		{
-			init();
-		}
-		*/
+		
 		// monster speed
 		monsterSPEED = g_dElapsedTime + 0.06;
 
@@ -1021,18 +949,22 @@ switch (MONS_NUM) {
 	{
 		monONE.X = MON_ALL.X;
 		monONE.Y = MON_ALL.Y;
-		//delete MON_ALL;
+		
 	}
 	else if (MONS_NUM == monsTWO)
 	{
 		monTWO.X = MON_ALL.X;
 		monTWO.Y = MON_ALL.Y;
-		//delete MON_ALL;
+		
 	}
 	else
 	{
-		//delete MON_ALL;
+		
 		return;
+	}
+	if ((monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y) || (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y))	// When monster touches player
+	{
+		init();
 	}
 }
 
