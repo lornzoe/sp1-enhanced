@@ -68,7 +68,11 @@ enum MON_IDLE
 	MON_LEFT,
 	MON_RIGHT
 };
-
+enum MON_NO
+{
+	monsONE,
+	monsTWO
+};
 enum P1_NUMBER {
 	NUM_ZERO,
 	NUM_ONE,
@@ -117,6 +121,8 @@ void monsterAI();			// The monster's actions
 void monsterLOC();			// renders all monsters' location
 void monsterALL();			// monster number 1 position and looks
 void monsterCHASE();		// monster chasing player function
+MON_IDLE monsterIDLEMOV();	// random generator for monster's movements
+MON_NO monsterTABLE();		// random generator for monster on the map
 void loadMap();				// loads text file into array
 void winscreen();			// logic for winscreen
 void winscreenRender();		// renders winscreen

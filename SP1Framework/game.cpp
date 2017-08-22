@@ -21,7 +21,7 @@ double  g_dDeltaTime;
 double monsterSPEED;
 bool    g_abKeyPressed[K_COUNT];
 
-MON_IDLE monsterIDLEMOV();
+
 char map[25][80];
 bool levelChange = false;
 
@@ -660,13 +660,28 @@ void monsterAI()	// base code for how monster  acts
 {
 	MON_IDLE currentMOV;
 	currentMOV = monsterIDLEMOV();
+	
+	MON_NO MONS_NUM;
+	MONS_NUM = monsterTABLE();
+	COORD MON_ALL;
 
-		
+switch (MONS_NUM) {
+	case monsONE:
+	MON_ALL.X = monONE.X;
+	MON_ALL.Y = monONE.Y;
+		break;
+	case monsTWO:
+	MON_ALL.X = monTWO.X;
+	MON_ALL.Y = monTWO.Y;
+		break;
+	}
+
+
 
 	if (monsterSPEED < g_dElapsedTime)
 	{
 		//Monster 1
-		if ((monONE.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (monONE.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (monONE.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (monONE.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
+		if ((MON_ALL.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (MON_ALL.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (MON_ALL.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (MON_ALL.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
 		{
 
 			monsterCHASE();
@@ -678,63 +693,62 @@ void monsterAI()	// base code for how monster  acts
 				monsterCHASE();
 				break;
 			case MON_UP:
-				if ((monONE.Y > 0) && (map[monONE.Y - 1][monONE.X]) == BLANK_SPACE)
+				if ((MON_ALL.Y > 0) && (map[MON_ALL.Y - 1][MON_ALL.X]) == BLANK_SPACE)
 				{
-					monONE.Y--;
-					
+					MON_ALL.Y--;
+
 					break;
 				}
 				else
 				{
-					
 					break;
 				}
 			case MON_DOWN:
-				if ((monONE.Y < g_Console.getConsoleSize().Y - 1) && (map[monONE.Y + 1][monONE.X]) == BLANK_SPACE)
+				if ((MON_ALL.Y < g_Console.getConsoleSize().Y - 1) && (map[MON_ALL.Y + 1][MON_ALL.X]) == BLANK_SPACE)
 				{
-					monONE.Y++;
-					
+					MON_ALL.Y++;
+
 					break;
 				}
 				else
 				{
-					
+
 					break;
 				}
 			case MON_LEFT:
-				if ((monONE.X > 0) && (map[monONE.Y][monONE.X - 1]) == BLANK_SPACE)
+				if ((MON_ALL.X > 0) && (map[MON_ALL.Y][MON_ALL.X - 1]) == BLANK_SPACE)
 				{
-					monONE.X--;
-					
+					MON_ALL.X--;
+
 					break;
 				}
 				else
 				{
-					
+
 					break;
 				}
 			case MON_RIGHT:
-				if ((monONE.X < (g_Console.getConsoleSize().X + 79)) && (map[monONE.Y][monONE.X + 1]) == BLANK_SPACE)
+				if ((MON_ALL.X < (g_Console.getConsoleSize().X + 79)) && (map[MON_ALL.Y][MON_ALL.X + 1]) == BLANK_SPACE)
 				{
-					monONE.X++;
-					
+					MON_ALL.X++;
+
 					break;
 				}
 				else
 				{
-					
+
 					break;
 				}
 			default:
 				break;
 			}
 		}
-		if (monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y)	// When monster touches player
+		if (MON_ALL.X == g_sChar.m_cLocation.X && MON_ALL.Y == g_sChar.m_cLocation.Y)	// When monster touches player
 		{
 			init();
 		}
 
-		//Monster 2
+		/*Monster 2
 		if ((monTWO.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (monTWO.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (monTWO.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (monTWO.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
 		{
 
@@ -750,48 +764,48 @@ void monsterAI()	// base code for how monster  acts
 				if ((monTWO.Y > 0) && (map[monTWO.Y - 1][monTWO.X]) == BLANK_SPACE)
 				{
 					monTWO.Y--;
-					
+
 					break;
 				}
 				else
 				{
-					
+
 					break;
 				}
 			case MON_DOWN:
 				if ((monTWO.Y < g_Console.getConsoleSize().Y - 1) && (map[monTWO.Y + 1][monTWO.X]) == BLANK_SPACE)
 				{
 					monTWO.Y++;
-					
+
 					break;
 				}
 				else
 				{
-					
+
 					break;
 				}
 			case MON_LEFT:
 				if ((monTWO.X > 0) && (map[monTWO.Y][monTWO.X - 1]) == BLANK_SPACE)
 				{
 					monTWO.X--;
-					
+
 					break;
 				}
 				else
 				{
-					
+
 					break;
 				}
 			case MON_RIGHT:
 				if ((monTWO.X < (g_Console.getConsoleSize().X + 79)) && (map[monTWO.Y][monTWO.X + 1]) == BLANK_SPACE)
 				{
 					monTWO.X++;
-					
+
 					break;
 				}
 				else
 				{
-					
+
 					break;
 				}
 			default:
@@ -802,14 +816,34 @@ void monsterAI()	// base code for how monster  acts
 		{
 			init();
 		}
-// monster speed
-		monsterSPEED = g_dElapsedTime + 0.25;
-	}
+		*/
+		// monster speed
+		monsterSPEED = g_dElapsedTime + 0.06;
 
+	}
+	if (MONS_NUM == monsONE)
+	{
+		monONE.X = MON_ALL.X;
+		monONE.Y = MON_ALL.Y;
+		//delete MON_ALL;
+	}
+	else if (MONS_NUM == monsTWO)
+	{
+		monTWO.X = MON_ALL.X;
+		monTWO.Y = MON_ALL.Y;
+		//delete MON_ALL;
+	}
+	else
+	{
+		//delete MON_ALL;
+		return;
+	}
 }
 
 void monsterCHASE()	// code for monster to chase down the player
 {
+	MON_NO MONS_NUM;
+	MONS_NUM = monsterTABLE();
 	
 	if (monsterSPEED < g_dElapsedTime)
 	{
@@ -1104,6 +1138,7 @@ void monsterCHASE()	// code for monster to chase down the player
 
 			}
 		}
+		
 		monsterSPEED = g_dElapsedTime + 0.06;
 	}
 }
@@ -1138,6 +1173,25 @@ MON_IDLE monsterIDLEMOV()	// When monster is not near the player
 	}
 
 	return MON_MOVEMENT;
+}
+
+MON_NO monsterTABLE()
+{
+	MON_NO MONSTER_NO = monsONE;
+
+	int monALL;
+	monALL = rand() % 1000;
+
+	if (monALL <= 500)
+	{
+		MONSTER_NO = monsONE;
+	}
+	else if (monALL <= 1000 && monALL > 500)
+	{
+		MONSTER_NO = monsTWO;
+	}
+
+	return MONSTER_NO;
 }
 
 void renderMonster() {
