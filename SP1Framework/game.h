@@ -6,6 +6,7 @@
 #define BLANK_SPACE 48
 #define WALL 49
 #define ENDPOINT 50
+#define ICE 51
 
 #include "Framework\timer.h"
 #include <fstream>
@@ -68,7 +69,11 @@ enum MON_IDLE
 	MON_LEFT,
 	MON_RIGHT
 };
-
+enum MON_NO
+{
+	monsONE,
+	monsTWO
+};
 enum P1_NUMBER {
 	NUM_ZERO,
 	NUM_ONE,
@@ -83,6 +88,7 @@ enum P1_NUMBER {
 	NUM_NIL
 };
 
+<<<<<<< HEAD
 enum MON1_MOV {
 	MON1_UP,
 	MON1_DOWN,
@@ -90,6 +96,15 @@ enum MON1_MOV {
 	MON1_RIGHT
 };
 
+=======
+enum SLIDE_DIRECTION {
+	D_NONE,
+	D_UP,
+	D_DOWN,
+	D_LEFT,
+	D_RIGHT
+};
+>>>>>>> d45993bc0f4c00205a8c608f7aaab3e21910d672
 // struct for the game character
 struct SGameChar
 {
@@ -113,6 +128,8 @@ void charactercolourselect();	//handles logic for character colour select screen
 void renderLevelSelect();	// handles renderlevelselectBG
 void gameplay();            // gameplay logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
+void moveCharacterICE();	// handles (exclusive) ice movement.
+void slideICE();			// handles logic-side of ice movement.
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
@@ -125,6 +142,8 @@ void monsterAI();			// The monster's actions
 void monsterLOC();			// renders all monsters' location
 void monsterALL();			// monster number 1 position and looks
 void monsterCHASE();		// monster chasing player function
+MON_IDLE monsterIDLEMOV();	// random generator for monster's movements
+MON_NO monsterTABLE();		// random generator for monster on the map
 void loadMap();				// loads text file into array
 void winscreen();			// logic for winscreen
 void winscreenRender();		// renders winscreen
