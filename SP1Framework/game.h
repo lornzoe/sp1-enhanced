@@ -150,7 +150,7 @@ void loadMap();				// loads text file into array
 void winscreen();			// logic for winscreen
 void winscreenRender();		// renders winscreen
 void resetPos();			// resets position of all entities
-bool isSolid(int x, int y);				// returns false if can move into coordinate and and true if cannot
+bool isSolid(int x, int y);	// returns false if can move into coordinate and and true if cannot
 
 void renderEncounterMonster();
 void renderMonster();

@@ -35,15 +35,14 @@ WORD charColor = 0x02; // initialise character colour
 
 COORD monONE;		//monster one
 COORD monTWO;		//monster two
-
-int puzzle1Integer1 = rand() % 10 + 1;
-int puzzle1Integer2 = rand() % 10 + 1;
+int puzzle1Integer1;
+int puzzle1Integer2;
 int puzzle1Ans;
 int puzzle1Input;
-int d1 = NULL;
-int d2 = NULL;
 P1_NUMBER digit1 = NUM_NIL;
 P1_NUMBER digit2 = NUM_NIL;
+int d1 = NULL;
+int d2 = NULL;
 
 SLIDE_DIRECTION directionICE = D_NONE;
 
@@ -76,6 +75,9 @@ void init( void )
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
     g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 1;
     g_sChar.m_hasKey = false;
+
+	puzzle1Integer1 = rand() % 9 + 1;
+	puzzle1Integer2 = rand() % 9 + 1;
 
 	monsterLocation();
 
@@ -227,12 +229,6 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 	if (g_abKeyPressed[K_ESCAPE])
 	{
 		g_bQuitGame = true;
-	}
-	if (g_abKeyPressed[K_NINE])
-	{
-		g_eGameState = S_ENCOUNTERMONSTER;
-		digit1 = NUM_NIL;
-		digit2 = NUM_NIL;
 	}
 	if (bSomethingHappened)
 	{
@@ -686,6 +682,11 @@ void processUserInput()
 		map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] = BLANK_SPACE;
 	}
 
+	if ((monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y) || (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y))	// When monster touches player
+	{
+		g_eGameState = S_ENCOUNTERMONSTER;
+	}
+
 	if (bSomethingHappened)
     {
         // set the bounce time to some time in the future to prevent accidental triggers
@@ -939,8 +940,8 @@ void monsterALL()				// how the monster is seen in game
 void monsterLocation()			// logic for the monsters location
 {
 	if (g_currentlevel == L_LEVELONE) {
-		monONE.X = (g_Console.getConsoleSize().X / 2 - 13);
-		monONE.Y = (g_Console.getConsoleSize().Y / 2 - 10);
+		monONE.X = NULL;
+		monONE.Y = NULL;
 		monTWO.X = (g_Console.getConsoleSize().X / 2 + 36);
 		monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 10);
 	}
@@ -967,8 +968,8 @@ void monsterLocation()			// logic for the monsters location
 	}
 	else if (g_currentlevel == L_LEVELFIVE)
 	{
-		monONE.X = (g_Console.getConsoleSize().X / 2);
-		monONE.Y = (g_Console.getConsoleSize().Y / 2);
+		monONE.X = NULL;
+		monONE.Y = NULL;
 		monTWO.X = NULL;
 		monTWO.Y = NULL;
 	}
@@ -1079,10 +1080,7 @@ switch (MONS_NUM) {
 	monsterSPEED = g_dElapsedTime + 0.06;
 
 	}
-	if ((monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y) || (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y))	// When monster touches player
-	{
-		init();
-	}
+	
 }
 
 void monsterCHASE()						// sub-function for monster to chase player
@@ -1513,12 +1511,12 @@ void renderMonsterPuzzle() {
 	c.Y = 17;
 	g_Console.writeToBuffer(c, "What is ", 0x02);
 	c.X = c.X + 8;
-	g_Console.writeToBuffer(c, puzzle1Integer1, 0x02);
-	c.X = c.X + 2;
+	g_Console.writeToBuffer(c, to_string(puzzle1Integer1), 0x02);
+	c.X = c.X + 3;
 	g_Console.writeToBuffer(c, "x", 0x02);
 	c.X = c.X + 2;
-	g_Console.writeToBuffer(c, puzzle1Integer2, 0x02);
-	c.X = c.X + 2;
+	g_Console.writeToBuffer(c, to_string(puzzle1Integer2), 0x02);
+	c.X = c.X + 3;
 	g_Console.writeToBuffer(c, "?", 0x02);
 
 	// Answer portion
@@ -1662,8 +1660,6 @@ void monsterPuzzle()
 
 	COORD c = g_Console.getConsoleSize();
 
-
-
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
@@ -1676,13 +1672,14 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_ONE;
 			d1 = 1;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_ONE;
 			d2 = 1;
+			bSomethingHappened = true;
 		}
-		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_TWO])
 	{
@@ -1690,11 +1687,13 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_TWO;
 			d1 = 2;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_TWO;
 			d2 = 2;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
@@ -1704,11 +1703,13 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_THREE;
 			d1 = 3;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_THREE;
 			d2 = 3;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
@@ -1718,11 +1719,13 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_FOUR;
 			d1 = 4;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_FOUR;
 			d2 = 4;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
@@ -1732,11 +1735,13 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_FIVE;
 			d1 = 5;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_FIVE;
 			d2 = 5;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
@@ -1746,11 +1751,13 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_SIX;
 			d1 = 6;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_SIX;
 			d2 = 6;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
@@ -1760,11 +1767,13 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_SEVEN;
 			d1 = 7;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_SEVEN;
 			d2 = 7;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
@@ -1774,11 +1783,13 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_EIGHT;
 			d1 = 8;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_EIGHT;
 			d2 = 8;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
@@ -1788,11 +1799,13 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_NINE;
 			d1 = 9;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_NINE;
 			d2 = 9;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
@@ -1802,42 +1815,58 @@ void monsterPuzzle()
 		{
 			digit1 = NUM_ZERO;
 			d1 = 0;
+			bSomethingHappened = true;
 		}
-		if (digit2 == NUM_NIL)
+		else if (digit2 == NUM_NIL && digit1 != NUM_NIL)
 		{
 			digit2 = NUM_ZERO;
 			d2 = 0;
+			bSomethingHappened = true;
 		}
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_BACKSPACE])
 	{
-		if ((digit1 != NUM_NIL)&(digit2 != NUM_NIL)) // if both filled
+		if ((digit1 != NUM_NIL) && (digit2 != NUM_NIL)) { // if both filled
 			digit2 = NUM_NIL;
-		if ((digit1 != NUM_NIL)&(digit2 == NUM_NIL)) //if only digit 1 digit filled.
+		}
+		else if ((digit1 != NUM_NIL) && (digit2 == NUM_NIL)) { //if only digit 1 digit filled.
 			digit1 = NUM_NIL;
+		}
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_ENTER])
 	{
-		if ((d1 == NULL) &(d2 == NULL))
+		puzzle1Input = 0;
+
+		if ((d1 == NULL)&&(d2 == NULL))
 		{
 			puzzle1Input = 0;
 		}
-		if ((d2 == NULL)&(d1 == NULL))
+		else if ((d1 != NULL)&&(d2 == NULL))
 		{
 			puzzle1Input = d1;
 		}
-		if ((d1 != NULL)&(d2 != NULL))
+		else if ((d1 != NULL)&&(d2 != NULL))
 		{
-			puzzle1Input = d1*d2;
+			puzzle1Input = ((d1 * 10) + d2);
 		}
+
 		//now check answer.
-		puzzle1Ans = puzzle1Integer1*puzzle1Integer2;
-		if (puzzle1Input != puzzle1Ans) //wrong ans
-			g_eGameState = S_SPLASHSCREEN; //output for now, in future replace with a more suitable sequence.
-		if (puzzle1Ans == puzzle1Input)// correct answer
+		puzzle1Ans = puzzle1Integer1 * puzzle1Integer2;
+
+	//	if (puzzle1Input != puzzle1Ans) //wrong ans
+	//		g_eGameState = S_SPLASHSCREEN; //output for now, in future replace with a more suitable sequence.
+
+		if (puzzle1Ans == puzzle1Input) {	// correct answer
 			g_eGameState = S_GAME;
+			puzzle1Integer1 = rand() % 10 + 1;
+			puzzle1Integer2 = rand() % 10 + 1;
+			digit1 = NUM_NIL;
+			digit2 = NUM_NIL;
+			d1 = NULL;
+			d2 = NULL;
+		}
 		bSomethingHappened = true;
 	}
 
