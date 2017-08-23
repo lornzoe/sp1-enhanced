@@ -687,9 +687,29 @@ void processUserInput()
 		map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] = BLANK_SPACE;
 	}
 
-	if ((monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y) || (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y))	// When monster touches player
+	if (monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y)			// When monster touches player
 	{
 		g_eGameState = S_ENCOUNTERMONSTER;
+		monONE.X = NULL;
+		monONE.Y = NULL;
+	}
+	if (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y)
+	{
+		g_eGameState = S_ENCOUNTERMONSTER;
+		monTWO.X = NULL;
+		monTWO.Y = NULL;
+	}
+	if (monTHREE.X == g_sChar.m_cLocation.X && monTHREE.Y == g_sChar.m_cLocation.Y)
+	{
+		g_eGameState = S_ENCOUNTERMONSTER;
+		monTHREE.X = NULL;
+		monTHREE.Y = NULL;
+	}
+	if (BOSS_ENGAGE_RANGE_X && monBOSS.Y == g_sChar.m_cLocation.Y)
+	{
+		g_eGameState = S_ENCOUNTERMONSTER;
+		monBOSS.X = NULL;
+		monBOSS.Y = NULL;
 	}
 
 	if (bSomethingHappened)
@@ -947,8 +967,8 @@ void monsterALL()				// how the monster is seen in game
 void monsterLocation()			// logic for the monsters location
 {
 	if (g_currentlevel == L_LEVELONE) {
-		monONE.X = NULL;
-		monONE.Y = NULL;
+		monONE.X = (g_Console.getConsoleSize().X / 2 - 16);
+		monONE.Y = (g_Console.getConsoleSize().Y / 2 - 10);
 		monTWO.X = (g_Console.getConsoleSize().X / 2 + 36);
 		monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 10);
 		monTHREE.X = NULL;
@@ -997,7 +1017,7 @@ void monsterLocation()			// logic for the monsters location
 		monTWO.Y = NULL;
 		monTHREE.X = NULL;
 		monTHREE.Y = NULL;
-		monBOSS.X = (g_Console.getConsoleSize().X / 2 - 5);
+		monBOSS.X = (g_Console.getConsoleSize().X / 2 - 2);
 		monBOSS.Y = (g_Console.getConsoleSize().Y / 2 );
 	}
 }

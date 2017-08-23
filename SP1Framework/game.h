@@ -9,6 +9,7 @@
 #define ICE 51
 #define KEY 52
 #define GATE 53
+#define BOSS_ENGAGE_RANGE_X ((monBOSS.X == g_sChar.m_cLocation.X) || (monBOSS.X + 1 == g_sChar.m_cLocation.X) || (monBOSS.X + 2 == g_sChar.m_cLocation.X)) 
 
 #include "Framework\timer.h"
 #include <fstream>
