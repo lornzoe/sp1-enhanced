@@ -41,6 +41,10 @@ COORD monBOSS;
 
 //level completion
 bool levelOneC;
+bool levelTwoC;
+bool levelThreeC;
+bool levelFourC;
+bool levelFiveC;
 
 int puzzle1Integer1 = rand() % 10 + 1;
 int puzzle1Integer2 = rand() % 10 + 1;
@@ -78,7 +82,11 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
 	g_currentlevel = L_LEVELONE;
-	levelOneC = false;
+	bool levelOneC = false;
+	bool levelTwoC = false;
+	bool levelThreeC = false;
+	bool levelFourC = false;
+	bool levelFiveC = false;
 
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
@@ -261,7 +269,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
-	if (g_abKeyPressed[K_TWO])
+	if (g_abKeyPressed[K_TWO] && levelOneC)
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELTWO;
@@ -271,7 +279,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
-	if (g_abKeyPressed[K_THREE])
+	if (g_abKeyPressed[K_THREE] && levelTwoC)
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELTHREE;
@@ -281,7 +289,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
-	if (g_abKeyPressed[K_FOUR])
+	if (g_abKeyPressed[K_FOUR] && levelThreeC)
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELFOUR;
@@ -291,7 +299,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		PlaySound(TEXT("levels4-5.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
-	if (g_abKeyPressed[K_FIVE])
+	if (g_abKeyPressed[K_FIVE] && levelFourC)
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELFIVE;
@@ -642,7 +650,8 @@ void processUserInput()
     // exits back to level select if escape is pressed
 	if (g_abKeyPressed[K_ESCAPE])
 	{
-		init();
+		g_eGameState = S_SPLASHSCREEN;
+		resetPos();
 		monsterLocation();
 		bSomethingHappened = true;
 	}
@@ -661,6 +670,7 @@ void processUserInput()
 				levelChange = true;
 				resetPos();
 				monsterLocation();
+				levelTwoC = true;
 				bSomethingHappened = true;
 				break;
 			case L_LEVELTHREE:
@@ -668,6 +678,7 @@ void processUserInput()
 				levelChange = true;
 				resetPos();
 				monsterLocation();
+				levelThreeC = true;
 				bSomethingHappened = true;
 				break;
 			case L_LEVELFOUR:
@@ -675,12 +686,15 @@ void processUserInput()
 				levelChange = true;
 				resetPos();
 				monsterLocation();
+				levelFourC = true;
 				bSomethingHappened = true;
 				break;
 			case L_LEVELFIVE:
 				g_eGameState = S_WINSCREEN;
 				levelChange = true;
+				resetPos();
 				monsterLocation();
+				levelFiveC = true;
 				bSomethingHappened = true;
 				break;
 
@@ -822,7 +836,7 @@ void renderCharacterColour() {
 	g_Console.writeToBuffer(c, "5. PINK", 0x05);
 	c.Y += 3;
 	c.X = g_Console.getConsoleSize().X / 2 - 13;
-	g_Console.writeToBuffer(c, "<Press Esc to go back>", 0x06);
+	g_Console.writeToBuffer(c, "<Press Esc to go back>", 0x02);
 	c.Y = g_Console.getConsoleSize().Y / 2;
 	c.X = 2;
 	g_Console.writeToBuffer(c, "Current Colour", charColor);
@@ -839,18 +853,36 @@ void renderLevelSelectBG()
 	if (levelOneC) {
 		g_Console.writeToBuffer(c, "2. Level Two", 0x06);
 	}
+	else {
+		g_Console.writeToBuffer(c, "Level Locked", 0x04);
+	}
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "3. Level Three", 0x06);
+	if (levelTwoC) {
+		g_Console.writeToBuffer(c, "3. Level Three", 0x06);
+	}
+	else {
+		g_Console.writeToBuffer(c, "Level Locked", 0x04);
+	}
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "4. Level Four", 0x06);
+	if (levelThreeC) {
+		g_Console.writeToBuffer(c, "4. Level Four", 0x06);
+	}
+	else {
+		g_Console.writeToBuffer(c, "Level Locked", 0x04);
+	}
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "5. Level Five", 0x06);
+	if (levelFourC) {
+		g_Console.writeToBuffer(c, "5. Level Five", 0x06);
+	}
+	else {
+		g_Console.writeToBuffer(c, "Level Locked", 0x04);
+	}
 	c.Y += 3;
 	c.X = g_Console.getConsoleSize().X / 2 - 13;
-	g_Console.writeToBuffer(c, "<Press Esc to go back>", 0x06);
+	g_Console.writeToBuffer(c, "<Press Esc to go back>", 0x02);
 }
 
 void renderMap()
@@ -1064,8 +1096,6 @@ void monsterAI()				// base code for how monster  acts
 	MON_NO MONS_NUM;
 	MONS_NUM = monsterTABLE();
 	COORD MON_ALL;
-
-	COORD m_target;
 	
 
 switch (MONS_NUM) {
