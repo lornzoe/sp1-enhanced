@@ -39,6 +39,8 @@ COORD monTWO;
 COORD monTHREE;		
 COORD monBOSS;
 
+//level completion
+bool levelOneC;
 
 int puzzle1Integer1 = rand() % 10 + 1;
 int puzzle1Integer2 = rand() % 10 + 1;
@@ -75,6 +77,8 @@ void init( void )
 
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
+	g_currentlevel = L_LEVELONE;
+	levelOneC = false;
 
 
     g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
@@ -352,7 +356,11 @@ void charactercolourselect() {
 }
 
 void winscreen() {
-	init();
+	if (g_abKeyPressed[K_ESCAPE]) {
+		g_bQuitGame = true; // exit game
+	}else if (g_abKeyPressed[K_ENTER]) {
+		g_eGameState = S_SPLASHSCREEN; // reset game
+	}
 }
 
 void gameplay()            // gameplay logic
@@ -645,6 +653,7 @@ void processUserInput()
 				levelChange = true;
 				resetPos();
 				monsterLocation();
+				levelOneC = true;
 				bSomethingHappened = true;
 				break;
 			case L_LEVELTWO:
@@ -731,7 +740,7 @@ void renderSplashScreen()  // renders the splash screen
     COORD c = g_Console.getConsoleSize();
     c.Y /= 2;
     c.X = c.X / 2 - 8;
-    g_Console.writeToBuffer(c, "1. Level Select", 0x06);
+	g_Console.writeToBuffer(c, "1. Level Select", 0x06);
     c.Y += 2;
     c.X = g_Console.getConsoleSize().X / 2 - 13;
     g_Console.writeToBuffer(c, "2. Change Character Colour", 0x06);
@@ -756,7 +765,30 @@ void renderSplashScreen()  // renders the splash screen
 }
 
 void winscreenRender() {
-	//TODO
+	COORD c;
+	c.X = g_Console.getConsoleSize().X / 2 - 30;
+	c.Y = g_Console.getConsoleSize().Y / 2 - 6;
+	g_Console.writeToBuffer(c, "          _______                      _______  _        _ ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "|\\     /|(  ___  )|\\     /|  |\\     /|(  ___  )( (    /|( )", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "( \\   / )| (   ) || )   ( |  | )   ( || (   ) ||  \\  ( || |", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, " \\ (_) / | |   | || |   | |  | | _ | || |   | ||   \\ | || |", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "  \\   /  | |   | || |   | |  | |( )| || |   | || (\\ \\) || |", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "   ) (   | |   | || |   | |  | || || || |   | || | \\   |(_)", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "   | |   | (___) || (___) |  | () () || (___) || )  \\  | _ ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "   \\_/   (_______)(_______)  (_______)(_______)|/    )_)(_)", 0x02);
+	c.Y += 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "<Enter> To Restart", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 8;
+	g_Console.writeToBuffer(c, "<Escape> To Quit", 0x06);
 }
 
 void renderGame()
@@ -804,7 +836,9 @@ void renderLevelSelectBG()
 	g_Console.writeToBuffer(c, "1. Level One", 0x06);
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "2. Level Two", 0x06);
+	if (levelOneC) {
+		g_Console.writeToBuffer(c, "2. Level Two", 0x06);
+	}
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "3. Level Three", 0x06);
@@ -2047,15 +2081,15 @@ void monsterPuzzle()
 	{
 		puzzle1Input = 0;
 
-		if ((d1 == NULL)&&(d2 == NULL))
+		if ((digit1 == NUM_NIL)&&(digit2 == NUM_NIL))
 		{
 			puzzle1Input = 0;
 		}
-		else if ((d1 != NULL)&&(d2 == NULL))
+		else if ((digit1 != NUM_NIL)&&(digit2 == NUM_NIL))
 		{
 			puzzle1Input = d1;
 		}
-		else if ((d1 != NULL)&&(d2 != NULL))
+		else if ((digit1 != NUM_NIL)&&(digit2 != NUM_NIL))
 		{
 			puzzle1Input = ((d1 * 10) + d2);
 		}
