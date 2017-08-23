@@ -141,8 +141,8 @@ void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void monsterAI();			// The monster's actions
-void monsterLOC();			// renders all monsters' location
 void monsterALL();			// monster number 1 position and looks
+void monsterLocation();		// edits monster's location
 void monsterCHASE();		// monster chasing player function
 MON_IDLE monsterIDLEMOV();	// random generator for monster's movements
 MON_NO monsterTABLE();		// random generator for monster on the map
