@@ -74,7 +74,8 @@ enum MON_IDLE
 enum MON_NO
 {
 	monsONE,
-	monsTWO
+	monsTWO,
+	monsTHREE
 };
 enum P1_NUMBER {
 	NUM_ZERO,

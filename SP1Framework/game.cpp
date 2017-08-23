@@ -33,8 +33,12 @@ ELEVELS g_currentlevel;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 WORD charColor = 0x02; // initialise character colour
 
-COORD monONE;		//monster one
-COORD monTWO;		//monster two
+//monsters
+COORD monONE;		
+COORD monTWO;		
+COORD monTHREE;		
+COORD monBOSS;
+
 
 int puzzle1Integer1 = rand() % 10 + 1;
 int puzzle1Integer2 = rand() % 10 + 1;
@@ -934,6 +938,8 @@ void monsterALL()				// how the monster is seen in game
 {
 	g_Console.writeToBuffer(monONE, "M", 0x0C);
 	g_Console.writeToBuffer(monTWO, "M", 0x0C);
+	g_Console.writeToBuffer(monTHREE, "M", 0x0C);
+	g_Console.writeToBuffer(monBOSS, "@M@", 0x0C);
 }
 
 void monsterLocation()			// logic for the monsters location
@@ -943,6 +949,10 @@ void monsterLocation()			// logic for the monsters location
 		monONE.Y = (g_Console.getConsoleSize().Y / 2 - 10);
 		monTWO.X = (g_Console.getConsoleSize().X / 2 + 36);
 		monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 10);
+		monTHREE.X = NULL;
+		monTHREE.Y = NULL;
+		monBOSS.X = NULL;
+		monBOSS.Y = NULL;
 	}
 	else if (g_currentlevel == L_LEVELTWO)
 	{
@@ -950,6 +960,10 @@ void monsterLocation()			// logic for the monsters location
 		monONE.Y = (g_Console.getConsoleSize().Y / 2 - 5);
 		monTWO.X = (g_Console.getConsoleSize().X / 2 + 26);
 		monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 8);
+		monTHREE.X = NULL;
+		monTHREE.Y = NULL;
+		monBOSS.X = NULL;
+		monBOSS.Y = NULL;
 	}
 	else if (g_currentlevel == L_LEVELTHREE)
 	{
@@ -957,6 +971,10 @@ void monsterLocation()			// logic for the monsters location
 		monONE.Y = (g_Console.getConsoleSize().Y / 2 + 7);
 		monTWO.X = (g_Console.getConsoleSize().X / 2 + 31);
 		monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 10);
+		monTHREE.X = (g_Console.getConsoleSize().X / 2 + 8);
+		monTHREE.Y = (g_Console.getConsoleSize().Y / 2 - 1);
+		monBOSS.X = NULL;
+		monBOSS.Y = NULL;
 	}
 	else if (g_currentlevel == L_LEVELFOUR)
 	{
@@ -964,13 +982,21 @@ void monsterLocation()			// logic for the monsters location
 		monONE.Y = (g_Console.getConsoleSize().Y / 2 - 5);
 		monTWO.X = (g_Console.getConsoleSize().X / 2 + 26);
 		monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 8);
+		monTHREE.X = (g_Console.getConsoleSize().X / 2 + 36);
+		monTHREE.Y = (g_Console.getConsoleSize().Y / 2 - 7);
+		monBOSS.X = NULL;
+		monBOSS.Y = NULL;
 	}
 	else if (g_currentlevel == L_LEVELFIVE)
 	{
-		monONE.X = (g_Console.getConsoleSize().X / 2);
-		monONE.Y = (g_Console.getConsoleSize().Y / 2);
+		monONE.X = NULL;
+		monONE.Y = NULL;
 		monTWO.X = NULL;
 		monTWO.Y = NULL;
+		monTHREE.X = NULL;
+		monTHREE.Y = NULL;
+		monBOSS.X = (g_Console.getConsoleSize().X / 2 - 5);
+		monBOSS.Y = (g_Console.getConsoleSize().Y / 2 );
 	}
 }
 
@@ -995,6 +1021,10 @@ switch (MONS_NUM) {
 	MON_ALL.X = monTWO.X;
 	MON_ALL.Y = monTWO.Y;
 		break;
+	case monsTHREE:
+	MON_ALL.X = monTHREE.X;
+	MON_ALL.Y = monTHREE.Y;
+	break;
 	}
 
 	if (monsterSPEED < g_dElapsedTime)
@@ -1070,6 +1100,12 @@ switch (MONS_NUM) {
 				monTWO.Y = MON_ALL.Y;
 
 			}
+			else if (MONS_NUM == monsTHREE)
+			{
+				monTHREE.X = MON_ALL.X;
+				monTHREE.Y = MON_ALL.Y;
+
+			}
 			else
 			{
 
@@ -1079,7 +1115,7 @@ switch (MONS_NUM) {
 	monsterSPEED = g_dElapsedTime + 0.06;
 
 	}
-	if ((monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y) || (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y))	// When monster touches player
+	if ((monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y) || (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y) || (monTHREE.X == g_sChar.m_cLocation.X && monTHREE.Y == g_sChar.m_cLocation.Y))	// When monster touches player
 	{
 		init();
 	}
@@ -1388,6 +1424,154 @@ void monsterCHASE()						// sub-function for monster to chase player
 				}
 			}
 		}
+		/* Monster 3 */
+		if ((monTHREE.X >= (g_sChar.m_cLocation.X - MON_DETECT_RANGE_X)) && (monTHREE.X <= (g_sChar.m_cLocation.X + MON_DETECT_RANGE_X)) && (monTHREE.Y <= (g_sChar.m_cLocation.Y + MON_DETECT_RANGE_Y)) && (monTHREE.Y >= (g_sChar.m_cLocation.Y - MON_DETECT_RANGE_Y)))			//for the LEFT, RIGHT, TOP and BOTTOM side detection of the monster
+		{
+			if (monTHREE.X <= g_sChar.m_cLocation.X && monTHREE.X != g_sChar.m_cLocation.X && (map[monTHREE.Y][monTHREE.X + 1]) == BLANK_SPACE)
+			{
+				if ((map[monTHREE.Y][monTHREE.X + 1]) == WALL)		// allows monster to somewhat walk around WALLS
+				{
+					if ((map[monTHREE.Y + 1][monTHREE.X]) == WALL)
+					{
+						if ((map[monTHREE.Y][monTHREE.X - 1]) == WALL)
+						{
+							if ((map[monTHREE.Y - 1][monTHREE.X]) == BLANK_SPACE)
+							{
+								monTHREE.Y--;
+
+							}
+							else
+							{
+
+							}
+						}
+						else
+						{
+							monTHREE.X--;
+
+						}
+					}
+					else
+					{
+						monTHREE.Y++;
+
+					}
+				}
+				else
+				{
+					monTHREE.X++;
+
+				}
+			}
+			if (monTHREE.X >= g_sChar.m_cLocation.X && monTHREE.X != g_sChar.m_cLocation.X && (map[monTHREE.Y][monTHREE.X - 1]) == BLANK_SPACE)
+			{
+				if ((map[monTHREE.Y][monTHREE.X - 1]) == WALL)		// allows monster to somewhat walk around WALLS
+				{
+					if ((map[monTHREE.Y - 1][monTHREE.X]) == WALL)
+					{
+						if ((map[monTHREE.Y + 1][monTHREE.X]) == WALL)
+						{
+							if ((map[monTHREE.Y][monTHREE.X + 1]) == BLANK_SPACE)
+							{
+								monTHREE.X++;
+
+							}
+							else
+							{
+
+							}
+						}
+						else
+						{
+							monTHREE.Y++;
+
+						}
+					}
+					else
+					{
+						monTHREE.Y--;
+
+					}
+				}
+				else
+				{
+					monTHREE.X--;
+
+				}
+			}
+			if (monTHREE.Y >= g_sChar.m_cLocation.Y && monTHREE.Y != g_sChar.m_cLocation.Y && (map[monTHREE.Y - 1][monTHREE.X]) == BLANK_SPACE)
+			{
+				if ((map[monTHREE.Y - 1][monTHREE.X]) == WALL)		// allows monster to somewhat walk around WALLS
+				{
+					if ((map[monTHREE.Y][monTHREE.X + 1]) == WALL)
+					{
+						if ((map[monTHREE.Y][monTHREE.X - 1]) == WALL)
+						{
+							if ((map[monTHREE.Y + 1][monTHREE.X]) == BLANK_SPACE)
+							{
+								monTHREE.Y++;
+
+							}
+							else
+							{
+
+							}
+						}
+						else
+						{
+							monTHREE.X--;
+
+						}
+					}
+					else
+					{
+						monTHREE.X++;
+
+					}
+				}
+				else
+				{
+					monTHREE.Y--;
+
+				}
+			}
+			if (monTHREE.Y <= g_sChar.m_cLocation.Y && monTHREE.Y != g_sChar.m_cLocation.Y && (map[monTHREE.Y + 1][monTHREE.X]) == BLANK_SPACE)
+			{
+				if ((map[monTHREE.Y + 1][monTHREE.X]) == WALL)		// allows monster to somewhat walk around WALLS
+				{
+					if ((map[monTHREE.Y][monTHREE.X - 1]) == WALL)
+					{
+						if ((map[monTHREE.Y][monTHREE.X + 1]) == WALL)
+						{
+							if ((map[monTHREE.Y - 1][monTHREE.X]) == BLANK_SPACE)
+							{
+								monTHREE.Y--;
+
+							}
+							else
+							{
+
+							}
+						}
+						else
+						{
+							monTHREE.X++;
+
+						}
+					}
+					else
+					{
+						monTHREE.X--;
+
+					}
+				}
+				else
+				{
+					monTHREE.Y++;
+
+				}
+			}
+		}
 		monsterSPEED = g_dElapsedTime + 0.03;
 	}
 }
@@ -1429,7 +1613,7 @@ MON_NO monsterTABLE()
 	MON_NO MONSTER_NO = monsONE;
 
 	int monALL;
-	monALL = rand() % 1000;
+	monALL = rand() % 1500;
 
 	if (monALL <= 500)
 	{
@@ -1438,6 +1622,10 @@ MON_NO monsterTABLE()
 	else if (monALL <= 1000 && monALL > 500)
 	{
 		MONSTER_NO = monsTWO;
+	}
+	else if (monALL <= 1500 && monALL > 1000)
+	{
+		MONSTER_NO = monsTHREE;
 	}
 
 	return MONSTER_NO;
