@@ -48,6 +48,7 @@ enum EGAMESTATES
 	S_SPLASHSCREEN,
 	S_GAME,
 	S_LEVELSELECT,
+	S_LOADGAME,
 	S_CHARACTERCOLOR,
 	S_ENCOUNTERMONSTER,
 	S_WINSCREEN,
@@ -130,6 +131,7 @@ void renderCharacterColour();	// renders character colour select screen
 void charactercolourselect();	//handles logic for character colour select screen
 void renderLevelSelect();	// handles renderlevelselectBG
 void gameplay();            // gameplay logic
+void renderSavedFile();    // loads the game file that is saved
 void moveCharacter();       // moves the character, collision detection, physics, etc
 void moveCharacterICE();	// handles (exclusive) ice movement.
 void slideICE();			// handles logic-side of ice movement.
