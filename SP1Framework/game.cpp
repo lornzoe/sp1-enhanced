@@ -762,15 +762,14 @@ void renderSplashScreen()  // renders the splash screen
 {
     COORD c = g_Console.getConsoleSize();
 	c.Y /= 2;
-	c.Y += 1;
-	c.X = c.X / 2 - 8;
+	c.X = c.X / 2 - 9;
 	g_Console.writeToBuffer(c, "1. Level Select", 0x06);
 	c.Y += 2;
-	/*c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "2. Continue Game", 0x06);
-	c.Y += 2;*/
-	c.X = g_Console.getConsoleSize().X / 2 - 13;
-	g_Console.writeToBuffer(c, "2. Change Character Colour", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "3. Change Character Colour", 0x06);
     c.Y += 3;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
     g_Console.writeToBuffer(c, "<Press Esc to Quit>", 0x02);

@@ -1,8 +1,4 @@
 ﻿  game.cpp
-<<<<<<< HEAD
+  LINK : C:\Users\cryintiger\Documents\sp2017grp7\Debug\SP1Framework.exe not found or not built by the last incremental link; performing full link
   SP1Framework.vcxproj -> C:\Users\cryintiger\Documents\sp2017grp7\Debug\SP1Framework.exe
   SP1Framework.vcxproj -> C:\Users\cryintiger\Documents\sp2017grp7\Debug\SP1Framework.pdb (Partial PDB)
-=======
-  SP1Framework.vcxproj -> D:\Desktop\repos\sp2017grp7\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> D:\Desktop\repos\sp2017grp7\Debug\SP1Framework.pdb (Partial PDB)
->>>>>>> 5d733954e31587d26be53611708ff169a419fd9c
