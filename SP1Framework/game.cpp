@@ -225,6 +225,7 @@ void splashScreenWait() {
 void resetPos() {
 	g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
 	g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 1;
+	g_sChar.m_hasKey = false;
 }
 
 void splashScreenSelect()    // waits for time to pass in splash screen
@@ -945,6 +946,11 @@ void renderCharacter()
 {
     // Draw the location of the character
     g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+
+	// draw key at bottom left if player has picked up key
+	if (g_sChar.m_hasKey) {
+		g_Console.writeToBuffer((g_Console.getConsoleSize().X / 2 - 6), 0, "KEY OBTAINED", 0x0F);
+	}
 }
 
 void renderFramerate()
