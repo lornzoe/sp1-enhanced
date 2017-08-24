@@ -51,7 +51,10 @@ enum EGAMESTATES
 	S_LOADGAME,
 	S_CHARACTERCOLOR,
 	S_ENCOUNTERMONSTER,
+	S_BOSSENCOUNTER,
 	S_WINSCREEN,
+	S_WRONG,
+	S_CORRECT,
 	S_COUNT
 };
 
@@ -154,6 +157,12 @@ void winscreen();			// logic for winscreen
 void winscreenRender();		// renders winscreen
 void resetPos();			// resets position of all entities
 bool isSolid(int x, int y);	// returns false if can move into coordinate and and true if cannot
+void bossEncounter();		// handles logic for boss
+void renderBossEncounter();	// renders boss screen
+void renderCorrect();
+void renderWrong();
+void correctScreen();
+void wrongScreen();
 
 void renderEncounterMonster();
 void renderMonster();

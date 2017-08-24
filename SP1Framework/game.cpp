@@ -185,6 +185,12 @@ void update(double dt)
 			break;
 		case S_WINSCREEN: winscreen();
 			break;
+		case S_BOSSENCOUNTER: bossEncounter();
+			break;
+		case S_CORRECT: correctScreen();
+			break;
+		case S_WRONG: wrongScreen();
+			break;
     }
 }
 //--------------------------------------------------------------
@@ -213,6 +219,12 @@ void render()
 		case S_ENCOUNTERMONSTER: renderEncounterMonster();
 			break;
 		case S_WINSCREEN: winscreenRender();
+			break;
+		case S_BOSSENCOUNTER: renderBossEncounter();
+			break;
+		case S_CORRECT: renderCorrect();
+			break;
+		case S_WRONG: renderWrong();
 			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
@@ -743,9 +755,7 @@ void processUserInput()
 	}
 	if (BOSS_ENGAGE_RANGE_X && monBOSS.Y == g_sChar.m_cLocation.Y)
 	{
-		g_eGameState = S_ENCOUNTERMONSTER;
-		monBOSS.X = NULL;
-		monBOSS.Y = NULL;
+		g_eGameState = S_BOSSENCOUNTER;
 	}
 
 	if (bSomethingHappened)
@@ -753,6 +763,252 @@ void processUserInput()
         // set the bounce time to some time in the future to prevent accidental triggers
         g_dBounceTime = g_dElapsedTime + 0.25; 
     }
+
+}
+
+void bossEncounter() {
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime) {
+		return;
+	}
+
+	if (g_abKeyPressed[K_ONE]) {
+		g_eGameState = S_WRONG;
+		bSomethingHappened = true;
+	}
+	else if (g_abKeyPressed[K_TWO]) {
+		monBOSS.X = NULL;
+		monBOSS.Y = NULL;
+		g_eGameState = S_CORRECT;
+		bSomethingHappened = true;
+	}
+	else if (g_abKeyPressed[K_THREE]) {
+		g_eGameState = S_WRONG;
+		bSomethingHappened = true;
+	}
+
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.25;
+	}
+}
+
+void correctScreen() {
+	if (g_abKeyPressed[K_ENTER]) {
+		g_eGameState = S_GAME;
+	}
+}
+
+void wrongScreen() {
+	if (g_abKeyPressed[K_ENTER]) {
+		g_eGameState = S_BOSSENCOUNTER;
+	}
+}
+
+void renderBossEncounter() {
+	COORD c;
+	// sphinx
+	{
+		c.X = g_Console.getConsoleSize().X / 2 + 3;
+		c.Y = 8;
+		g_Console.writeToBuffer(c, "               ___", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "             .\"///\".", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "            /|<> <>!\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "           /-|  ^  !-\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "          /-- \\_=_/ --\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "          )---| W |---(", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "         /-\\--| W |--/-\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "        (_-_--|_-_|--___)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       (-___  -_-- _-- -_)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       )-_ _--_ _ ___--__|", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       (___ --__  __ __--(", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "      /-_  / __ -_ -__  \\_\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     _>/  -- /|___| _ \\ -_ )", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "    /--  _ - _/ _ \\>\\ -  -- \\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   ( / / /   > |~l \\   \\ \\ \\_)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   | |-' | |/  \"\"\"  \\| |   |_|", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   L_|_|_|_/         L_L_|_l_)", 0x06);
+	c.X -= 6;
+	c.Y = 6;
+	for (int i = 0; i <= 18; i++) {
+		g_Console.writeToBuffer(c, "|", 0x06);
+		c.Y += 1;
+	}
+	c.Y = 6;
+	c.X = 37;
+	for (int i = 0; i <= 20; i++) {
+		g_Console.writeToBuffer(c, " ", 0x06);
+		c.X += 1;
+		g_Console.writeToBuffer(c, "_", 0x06);
+		c.X += 1;
+	}
+	c.Y = 7;
+	c.X = 39;
+	g_Console.writeToBuffer(c, "Solve the riddles of the Sphinx to pass!", 0x06);
+}
+	// chest riddle
+	{
+		c.X = 1;
+		c.Y = 1;
+		g_Console.writeToBuffer(c, "In front of you are 3 chests:", 0x08);
+		c.Y += 2;
+		g_Console.writeToBuffer(c, "Chest 1 is labelled \"100 gold coins\".", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Chest 2 is labelled \"50 gold, 50 silver coins\".", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "Chest 3 is labelled \"100 silver coins\".", 0x08);
+		c.Y += 2;
+		g_Console.writeToBuffer(c, "You are told that all of the labels", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "are incorrectly placed, as they", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "describe the contents of another one", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "of the chests. To help you determine", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "which is the chest that contains", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "100 gold coins, you are allowed to", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "pick a random coin from a chest of", 0x08);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "your choice.", 0x08);
+		c.Y += 2;
+		g_Console.writeToBuffer(c, "Which chest should you pick?", 0x08);
+		c.X += 8;
+		c.Y += 4;
+		g_Console.writeToBuffer(c, "<1>   <2>   <3>", 0x0F);
+	} // chest puzzle
+}
+
+void renderCorrect() {
+	COORD c;
+	// sphinx
+	{
+		c.X = g_Console.getConsoleSize().X / 2 - 16;
+		c.Y = 4;
+		g_Console.writeToBuffer(c, "               ___", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "             .\"///\".", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "            /|<> <>!\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "           /-|  ^  !-\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "          /-- \\_=_/ --\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "          )---| W |---(", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "         /-\\--| W |--/-\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "        (_-_--|_-_|--___)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       (-___  -_-- _-- -_)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       )-_ _--_ _ ___--__|", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       (___ --__  __ __--(", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     _>/  -- /|___| _ \\ -_ )", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "    /--  _ - _/ _ \\>\\ -  -- \\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   ( / / /   > |~l \\   \\ \\ \\_)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   | |-' | |/  \"\"\"  \\| |   |_|", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   L_|_|_|_/         L_L_|_l_)", 0x06);
+		c.Y += 3;
+		c.X = g_Console.getConsoleSize().X / 2 - 6;
+		g_Console.writeToBuffer(c, "<Press Enter>", 0x02);
+		c.Y = g_Console.getConsoleSize().Y / 2 - 2;
+		c.X = g_Console.getConsoleSize().X / 2 - 27;
+		g_Console.writeToBuffer(c, "  ____    ___    ____    ____    _____    ____   _____ ", 0x0F);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, " / ___|  / _ \\  |  _ \\  |  _ \\  | ____|  / ___| |_   _|", 0x0F);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "| |     | | | | | |_) | | |_) | |  _|   | |       | |  ", 0x0F);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "| |___  | |_| | |  _ <  |  _ <  | |___  | |___    | |  ", 0x0F);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, " \\____|  \\___/  |_| \\_\\ |_| \\_\\ |_____|  \\____|   |_|  ", 0x0F);
+	}
+
+}
+
+void renderWrong() {
+	COORD c;
+	// sphinx
+	{
+		c.X = g_Console.getConsoleSize().X / 2 - 16;
+		c.Y = 4;
+		g_Console.writeToBuffer(c, "               ___", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "             .\"///\".", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "            /|<> <>!\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "           /-|  ^  !-\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "          /-- \\_=_/ --\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "          )---| W |---(", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "         /-\\--| W |--/-\\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "        (_-_--|_-_|--___)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       (-___  -_-- _-- -_)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       )-_ _--_ _ ___--__|", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "       (___ --__  __ __--(", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     _>/  -- /|___| _ \\ -_ )", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "    /--  _ - _/ _ \\>\\ -  -- \\", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   ( / / /   > |~l \\   \\ \\ \\_)", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   | |-' | |/  \"\"\"  \\| |   |_|", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   L_|_|_|_/         L_L_|_l_)", 0x06);
+		c.Y += 3;
+		c.X = g_Console.getConsoleSize().X / 2 - 6;
+		g_Console.writeToBuffer(c, "<Press Enter>", 0x02);
+		c.Y = g_Console.getConsoleSize().Y / 2 - 2;
+		c.X = g_Console.getConsoleSize().X / 2 - 23;
+		g_Console.writeToBuffer(c, "__        __  ____     ___    _   _    ____ ", 0x04);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "\\ \\      / / |  _ \\   / _ \\  | \\ | |  / ___|", 0x04);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, " \\ \\ /\\ / /  | |_) | | | | | |  \\| | | |  _ ", 0x04);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "  \\ V  V /   |  _ <  | |_| | | |\\  | | |_| |", 0x04);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   \\_/\\_/    |_| \\_\\  \\___/  |_| \\_|  \\____|", 0x04);
+	}
 
 }
 
