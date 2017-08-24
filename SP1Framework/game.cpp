@@ -236,11 +236,7 @@ void splashScreenWait() {
 	// g_eGameState = S_GAME;
 }
 
-void resetPos() {
-	g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
-	g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 1;
-	g_sChar.m_hasKey = false;
-}
+
 
 void splashScreenSelect()    // waits for time to pass in splash screen
 {
@@ -670,7 +666,7 @@ void processUserInput()
 	if (g_abKeyPressed[K_ESCAPE])
 	{
 		g_eGameState = S_SPLASHSCREEN;
-		resetPos();
+		
 		monsterLocation();
 		bSomethingHappened = true;
 	}
@@ -679,7 +675,7 @@ void processUserInput()
 			case L_LEVELONE:
 				g_currentlevel = L_LEVELTWO;
 				levelChange = true;
-				resetPos();
+				
 				monsterLocation();
 				levelOneC = true;
 				bSomethingHappened = true;
@@ -687,7 +683,7 @@ void processUserInput()
 			case L_LEVELTWO:
 				g_currentlevel = L_LEVELTHREE;
 				levelChange = true;
-				resetPos();
+				
 				monsterLocation();
 				levelTwoC = true;
 				PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -697,7 +693,7 @@ void processUserInput()
 			case L_LEVELTHREE:
 				g_currentlevel = L_LEVELFOUR;
 				levelChange = true;
-				resetPos();
+				
 				monsterLocation();
 				levelThreeC = true;
 				PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -707,7 +703,7 @@ void processUserInput()
 			case L_LEVELFOUR:
 				g_currentlevel = L_LEVELFIVE;
 				levelChange = true;
-				resetPos();
+				
 				monsterLocation();
 				levelFourC = true;
 				PlaySound(TEXT("boss.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -717,7 +713,7 @@ void processUserInput()
 			case L_LEVELFIVE:
 				g_eGameState = S_WINSCREEN;
 				levelChange = true;
-				resetPos();
+				
 				monsterLocation();
 				levelFiveC = true;
 				bSomethingHappened = true;
@@ -1022,15 +1018,14 @@ void renderSplashScreen()  // renders the splash screen
 {
     COORD c = g_Console.getConsoleSize();
 	c.Y /= 2;
-	c.Y += 1;
-	c.X = c.X / 2 - 8;
+	c.X = c.X / 2 - 9;
 	g_Console.writeToBuffer(c, "1. Level Select", 0x06);
 	c.Y += 2;
-	/*c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "2. Continue Game", 0x06);
-	c.Y += 2;*/
-	c.X = g_Console.getConsoleSize().X / 2 - 13;
-	g_Console.writeToBuffer(c, "2. Change Character Colour", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "3. Change Character Colour", 0x06);
     c.Y += 3;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
     g_Console.writeToBuffer(c, "<Press Esc to Quit>", 0x02);
@@ -1217,7 +1212,7 @@ void loadMap() {
 void renderCharacter()
 {
     // Draw the location of the character
-    g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+    g_Console.writeToBuffer(g_sChar.m_cLocation, (char)158, charColor);
 
 	// draw key at bottom left if player has picked up key
 	if (g_sChar.m_hasKey) {
@@ -1319,6 +1314,10 @@ void monsterLocation()			// logic for the monsters location
 		monTHREE.Y = NULL;
 		monBOSS.X = NULL;
 		monBOSS.Y = NULL;
+		//player && key
+		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
+		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 1;
+		g_sChar.m_hasKey = false;
 	}
 	else if (g_currentlevel == L_LEVELTWO)
 	{
@@ -1330,6 +1329,10 @@ void monsterLocation()			// logic for the monsters location
 		monTHREE.Y = NULL;
 		monBOSS.X = NULL;
 		monBOSS.Y = NULL;
+		//player && key
+		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 1;
+		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 - 6;
+		g_sChar.m_hasKey = false;
 	}
 	else if (g_currentlevel == L_LEVELTHREE)
 	{
@@ -1341,6 +1344,10 @@ void monsterLocation()			// logic for the monsters location
 		monTHREE.Y = (g_Console.getConsoleSize().Y / 2 - 1);
 		monBOSS.X = NULL;
 		monBOSS.Y = NULL;
+		//player && key
+		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 33;
+		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 - 10;
+		g_sChar.m_hasKey = false;
 	}
 	else if (g_currentlevel == L_LEVELFOUR)
 	{
@@ -1352,6 +1359,10 @@ void monsterLocation()			// logic for the monsters location
 		monTHREE.Y = (g_Console.getConsoleSize().Y / 2 - 7);
 		monBOSS.X = NULL;
 		monBOSS.Y = NULL;
+		//player && key
+		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 38;
+		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 10;
+		g_sChar.m_hasKey = false;
 	}
 	else if (g_currentlevel == L_LEVELFIVE)
 	{
@@ -1363,6 +1374,10 @@ void monsterLocation()			// logic for the monsters location
 		monTHREE.Y = NULL;
 		monBOSS.X = (g_Console.getConsoleSize().X / 2 - 2);
 		monBOSS.Y = (g_Console.getConsoleSize().Y / 2 );
+		//player && key
+		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 3;
+		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 + 10;
+		g_sChar.m_hasKey = false;
 	}
 }
 
