@@ -47,7 +47,7 @@ bool levelFourC;
 bool levelFiveC;
 
 int puzzle1Integer1 = rand() % 10 + 1;
-int puzzle1Integer2 = rand() % 10 + 1;
+int puzzle1Integer2 = rand() % 9 + 1;
 int puzzle1Ans;
 int puzzle1Input;
 P1_NUMBER digit1 = NUM_NIL;
@@ -1018,14 +1018,15 @@ void renderSplashScreen()  // renders the splash screen
 {
     COORD c = g_Console.getConsoleSize();
 	c.Y /= 2;
-	c.X = c.X / 2 - 9;
+	c.Y += 1;
+	c.X = c.X / 2 - 8;
 	g_Console.writeToBuffer(c, "1. Level Select", 0x06);
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	/*c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "2. Continue Game", 0x06);
-	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "3. Change Character Colour", 0x06);
+	c.Y += 2;*/
+	c.X = g_Console.getConsoleSize().X / 2 - 13;
+	g_Console.writeToBuffer(c, "2. Change Character Colour", 0x06);
     c.Y += 3;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
     g_Console.writeToBuffer(c, "<Press Esc to Quit>", 0x02);
@@ -2430,7 +2431,7 @@ void monsterPuzzle()
 		if (puzzle1Ans == puzzle1Input) {	// correct answer
 			g_eGameState = S_GAME;
 			puzzle1Integer1 = rand() % 10 + 1;
-			puzzle1Integer2 = rand() % 10 + 1;
+			puzzle1Integer2 = rand() % 9 + 1;
 			digit1 = NUM_NIL;
 			digit2 = NUM_NIL;
 			d1 = NULL;
