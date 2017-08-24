@@ -206,6 +206,8 @@ void render()
             break;
 		case S_LEVELSELECT: renderLevelSelect();
 			break;
+		case S_LOADGAME: renderSavedFile();
+			break;
 		case S_CHARACTERCOLOR: renderCharacterColour();
 			break;
 		case S_ENCOUNTERMONSTER: renderEncounterMonster();
@@ -238,7 +240,7 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 		g_eGameState = S_LEVELSELECT;
 		bSomethingHappened = true;
 	}
-	if (g_abKeyPressed[K_TWO])
+	if (g_abKeyPressed[K_THREE])
 	{
 		g_eGameState = S_CHARACTERCOLOR;
 		bSomethingHappened = true;
@@ -266,7 +268,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		monsterLocation();
 		levelChange = true;
 		bSomethingHappened = true;
-		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
+		PlaySound(TEXT("levels1-2.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
 	if (g_abKeyPressed[K_TWO] && levelOneC)
@@ -276,7 +278,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		monsterLocation();
 		levelChange = true;
 		bSomethingHappened = true;
-		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
+		PlaySound(TEXT("levels1-2.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
 	if (g_abKeyPressed[K_THREE] && levelTwoC)
@@ -286,7 +288,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		monsterLocation();
 		levelChange = true;
 		bSomethingHappened = true;
-		PlaySound(TEXT("levels1-3.wav"), NULL, SND_ASYNC | SND_LOOP);
+		PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
 	if (g_abKeyPressed[K_FOUR] && levelThreeC)
@@ -296,7 +298,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		monsterLocation();
 		levelChange = true;
 		bSomethingHappened = true;
-		PlaySound(TEXT("levels4-5.wav"), NULL, SND_ASYNC | SND_LOOP);
+		PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
 	if (g_abKeyPressed[K_FIVE] && levelFourC)
@@ -306,7 +308,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 		monsterLocation();
 		levelChange = true;
 		bSomethingHappened = true;
-		PlaySound(TEXT("levels4-5.wav"), NULL, SND_ASYNC | SND_LOOP);
+		PlaySound(TEXT("boss.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
 	if (g_abKeyPressed[K_ESCAPE])
@@ -389,6 +391,10 @@ void gameplay()            // gameplay logic
 
 
 	monsterAI();       // moves the monster to the player's character's location
+}
+
+void renderSavedFile()
+{
 }
 
 bool isSolid(int x, int y) {
@@ -752,12 +758,15 @@ void clearScreen()
 void renderSplashScreen()  // renders the splash screen
 {
     COORD c = g_Console.getConsoleSize();
-    c.Y /= 2;
-    c.X = c.X / 2 - 8;
+	c.Y /= 2;
+	c.X = c.X / 2 - 9;
 	g_Console.writeToBuffer(c, "1. Level Select", 0x06);
-    c.Y += 2;
-    c.X = g_Console.getConsoleSize().X / 2 - 13;
-    g_Console.writeToBuffer(c, "2. Change Character Colour", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "2. Continue Game", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "3. Change Character Colour", 0x06);
     c.Y += 3;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
     g_Console.writeToBuffer(c, "<Press Esc to Quit>", 0x02);
