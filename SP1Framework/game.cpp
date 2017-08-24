@@ -677,6 +677,8 @@ void processUserInput()
 				resetPos();
 				monsterLocation();
 				levelTwoC = true;
+				PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
+				system("0");
 				bSomethingHappened = true;
 				break;
 			case L_LEVELTHREE:
@@ -685,6 +687,8 @@ void processUserInput()
 				resetPos();
 				monsterLocation();
 				levelThreeC = true;
+				PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
+				system("0");
 				bSomethingHappened = true;
 				break;
 			case L_LEVELFOUR:
@@ -693,6 +697,8 @@ void processUserInput()
 				resetPos();
 				monsterLocation();
 				levelFourC = true;
+				PlaySound(TEXT("boss.wav"), NULL, SND_ASYNC | SND_LOOP);
+				system("0");
 				bSomethingHappened = true;
 				break;
 			case L_LEVELFIVE:
