@@ -32,6 +32,7 @@ EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 ELEVELS g_currentlevel;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 WORD charColor = 0x02; // initialise character colour
+lastSavedData g_save;
 
 //monsters
 COORD monONE;		
@@ -46,7 +47,7 @@ bool levelThreeC;
 bool levelFourC;
 bool levelFiveC;
 
-int puzzle1Integer1 = rand() % 10 + 1;
+int puzzle1Integer1 = rand() % 9 + 1;
 int puzzle1Integer2 = rand() % 9 + 1;
 int puzzle1Ans;
 int puzzle1Input;
@@ -56,6 +57,8 @@ int d1 = NULL;
 int d2 = NULL;
 
 SLIDE_DIRECTION directionICE = D_NONE;
+bool puzzleChange = false;
+PUZZLE_TYPE P_TYPE = PUZZLE_NIL;
 
 // Console object
 Console g_Console(80, 25, "Monuzzled");
@@ -733,18 +736,24 @@ void processUserInput()
 
 	if (monONE.X == g_sChar.m_cLocation.X && monONE.Y == g_sChar.m_cLocation.Y)			// When monster touches player
 	{
+		saveData();
+		puzzleChange = true;
 		g_eGameState = S_ENCOUNTERMONSTER;
 		monONE.X = NULL;
 		monONE.Y = NULL;
 	}
 	if (monTWO.X == g_sChar.m_cLocation.X && monTWO.Y == g_sChar.m_cLocation.Y)
 	{
+		saveData();
+		puzzleChange = true;
 		g_eGameState = S_ENCOUNTERMONSTER;
 		monTWO.X = NULL;
 		monTWO.Y = NULL;
 	}
 	if (monTHREE.X == g_sChar.m_cLocation.X && monTHREE.Y == g_sChar.m_cLocation.Y)
 	{
+		saveData();
+		puzzleChange = true;
 		g_eGameState = S_ENCOUNTERMONSTER;
 		monTHREE.X = NULL;
 		monTHREE.Y = NULL;
@@ -1166,6 +1175,8 @@ void renderMap()
 				case ICE: g_Console.writeToBuffer(c, r, (char)176, 0x07);
 					break;
 				case KEY: g_Console.writeToBuffer(c, r, (char)229, 0x0A);
+					if (g_sChar.m_hasKey)
+						map[r][c] = BLANK_SPACE;
 					break;
 				case GATE: g_Console.writeToBuffer(c, r, (char)219, 0x0A);
 					break;
@@ -2004,226 +2015,143 @@ MON_NO monsterTABLE()
 		MONSTER_NO = monsTHREE;
 	}
 
-	return MONSTER_NO;
+	return MONSTER_NO;	
 }
 
-void renderMonster() {
-	COORD c = g_Console.getConsoleSize();
-	// place monsters images here
-	int monsterrng = 1; //change 2 with number of monsters + 1.
-
-	switch (monsterrng) {
-	case 1: { // slime.
-
-		c.X = g_Console.getConsoleSize().X / 2 - 15;
-		c.Y = 0;
-		g_Console.writeToBuffer(c, "           `......`           ", 0x06);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "        -ossoo+++///:-`       ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "      `shhyyss++o+/////.      ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "      ohyyso(----)////:/`     ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "     `yyyyssssso+++/////-     ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "     `yyysosyyso+////:-/-     ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "     `yysoossoo+/:://:-/-     ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "     :syssooo//+/://:-:::     ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "   `oo+oyyso+/+////:-.:+/:`   ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "   :yys++os+:/++////::/s+:-   ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "    :syyssso++////-..:sy//-   ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "    `syyyso//::///-..-oy+:`   ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "     osssss+///++/:://///`    ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "     .+osssso+++/::--//+-     ", 0x02);
-		c.Y += 1;
-		g_Console.writeToBuffer(c, "   ``.---:///:::---..--.      ", 0x02);
-	}
-	default:
-		break;
-	}
-
+void saveData()
+{
+	g_save.savedlevel = g_currentlevel;
+	g_save.x = g_sChar.m_cLocation.X;
+	g_save.y = g_sChar.m_cLocation.Y;
 }
 
-// FOR PUZZLES, NOTE THAT YOU ARE WORKING WITH 16<= c.Y <= 25. Scale puzzles accordingly. Will look into other resolutions after core game is done.
-void renderEncounterMonster() {
-	renderMonster();
-	COORD c = g_Console.getConsoleSize();
-	c.X = 0;
-	c.Y = 15;
-	g_Console.writeToBuffer(c, "--------------------------------------------------------------------------------", 0x02);
-	renderMonsterPuzzle();
+void loadData()
+{
+	g_currentlevel = g_save.savedlevel;
+	g_sChar.m_cLocation.X = g_save.x;
+	g_sChar.m_cLocation.Y = g_save.y;
 }
+//------------------------------------------
+//			SEQUENCE OF EVENTS 
+//------------------------------------------
+// > When monster touches the player, switch game state to S_ENCOUNTERMONSTER.
+// > Use an enum to determine what control + level set to use. 
+// > RENDER IN THE FOLLOWING ORDER: MONSTER, PUZZLE + TEXT.
 
-void renderMonsterPuzzle() {
-	// This pretty much handles the logic and visual-side of the puzzles.
-
-	//To add: switch-case for multiple puzzles. For now it's a basic maths puzzle.
-	// What's a x b ?
-	// y=17: qn, y= 19: answer
-
-	COORD c = g_Console.getConsoleSize();
-
-	// Display "What's int1 x int2 ?"
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	c.Y = 17;
-	g_Console.writeToBuffer(c, "What is ", 0x02);
-	c.X = c.X + 8;
-	g_Console.writeToBuffer(c, to_string(puzzle1Integer1), 0x02);
-	c.X = c.X + 3;
-	g_Console.writeToBuffer(c, "x", 0x02);
-	c.X = c.X + 2;
-	g_Console.writeToBuffer(c, to_string(puzzle1Integer2), 0x02);
-	c.X = c.X + 3;
-	g_Console.writeToBuffer(c, "?", 0x02);
-
-	// Answer portion
-	c.X = g_Console.getConsoleSize().X / 2 - 6;
-	c.Y = 19;
-
-	g_Console.writeToBuffer(c, "Answer: ", 0x02);
-
-	//for answer container; answer will be 2 digits at most.
-
-	c.X = 42;
-	switch (digit1) {
-	case NUM_ZERO:
-	{
-		g_Console.writeToBuffer(c, "0", 0x02);
-		break;
-	}
-	case NUM_ONE:
-	{
-		g_Console.writeToBuffer(c, "1", 0x02);
-		break;
-	}
-	case NUM_TWO:
-	{
-		g_Console.writeToBuffer(c, "2", 0x02);
-		break;
-	}
-	case NUM_THREE:
-	{
-		g_Console.writeToBuffer(c, "3", 0x02);
-		break;
-	}
-	case NUM_FOUR:
-	{
-		g_Console.writeToBuffer(c, "4", 0x02);
-		break;
-	}
-	case NUM_FIVE:
-	{
-		g_Console.writeToBuffer(c, "5", 0x02);
-		break;
-	}
-	case NUM_SIX:
-	{
-		g_Console.writeToBuffer(c, "6", 0x02);
-		break;
-	}
-	case NUM_SEVEN:
-	{
-		g_Console.writeToBuffer(c, "7", 0x02);
-		break;
-	}
-	case NUM_EIGHT:
-	{
-		g_Console.writeToBuffer(c, "8", 0x02);
-		break;
-	}
-	case NUM_NINE:
-	{
-		g_Console.writeToBuffer(c, "9", 0x02);
-		break;
-	}
-	case NUM_NIL:
-	{
-		g_Console.writeToBuffer(c, "_", 0x02);
-		break;
-	}
-	default:
-	{
-		break;
-	}
-	}
-
-	c.X = 44;
-	switch (digit2) {
-	case NUM_ZERO:
-	{
-		g_Console.writeToBuffer(c, "0", 0x02);
-		break;
-	}
-	case NUM_ONE:
-	{
-		g_Console.writeToBuffer(c, "1", 0x02);
-		break;
-	}
-	case NUM_TWO:
-	{
-		g_Console.writeToBuffer(c, "2", 0x02);
-		break;
-	}
-	case NUM_THREE:
-	{
-		g_Console.writeToBuffer(c, "3", 0x02);
-		break;
-	}
-	case NUM_FOUR:
-	{
-		g_Console.writeToBuffer(c, "4", 0x02);
-		break;
-	}
-	case NUM_FIVE:
-	{
-		g_Console.writeToBuffer(c, "5", 0x02);
-		break;
-	}
-	case NUM_SIX:
-	{
-		g_Console.writeToBuffer(c, "6", 0x02);
-		break;
-	}
-	case NUM_SEVEN:
-	{
-		g_Console.writeToBuffer(c, "7", 0x02);
-		break;
-	}
-	case NUM_EIGHT:
-	{
-		g_Console.writeToBuffer(c, "8", 0x02);
-		break;
-	}
-	case NUM_NINE:
-	{
-		g_Console.writeToBuffer(c, "9", 0x02);
-		break;
-	}
-	case NUM_NIL:
-	{
-		g_Console.writeToBuffer(c, "_", 0x02);
-		break;
-	}
-	default:
-	{
-		break;
-	}
-	}
-}
+// monster1Puzzle works like gameplay() in gameplay logic.
+// loadPuzzle() works the same way as loadMap()
+// puzzleControls() will process all the puzzles.
 
 
 void monsterPuzzle()
 {
+	// make a randomiser, determines what level is done here.
+	monsterRandomiser();
+	loadPuzzle();
+	puzzlePosition();
+	puzzleControls();
 
+
+	if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] == PORTAL)
+	{
+		g_eGameState = S_GAME;
+		loadData();
+		levelChange = true;
+	}
+}
+
+void monsterRandomiser()
+{
+	if (puzzleChange)
+	{
+		int RNGGOFUCKYOURSELF;
+		RNGGOFUCKYOURSELF = rand() % 2 + 1;
+		
+		switch (RNGGOFUCKYOURSELF) {
+		case 1:
+			P_TYPE = PUZZLE_SLIME;
+			break;
+		case 2: P_TYPE = PUZZLE_ICE;
+			break;
+		default:
+			break;
+		}
+	}
+
+}
+
+void loadPuzzle() {
+	ifstream file;
+	string row;
+	if (puzzleChange) {
+		switch (P_TYPE)
+		{
+		case PUZZLE_SLIME: break;
+		default:
+		{
+			switch (P_TYPE) {
+			case PUZZLE_ICE:
+				file.open("PuzzleMap/puzzle1.txt");
+				break;
+			default: break;
+			}
+
+			for (int i = 0; i < 25; i++) {
+				getline(file, row);
+				for (int j = 0; j < 80; j++) {
+					map[i][j] = row[j];
+				}
+			}
+			file.close();
+
+
+		}
+		}
+
+	}
+}
+
+void puzzlePosition() {
+	if (puzzleChange)
+	{
+		switch (P_TYPE)
+		{
+		case PUZZLE_SLIME: 
+			g_sChar.m_cLocation.X = 1;
+			g_sChar.m_cLocation.Y = 0;
+			break;
+		case PUZZLE_ICE:
+			g_sChar.m_cLocation.X = 23;
+			g_sChar.m_cLocation.Y = 3;
+			break;
+		}
+	}
+	puzzleChange = false;
+}
+
+void puzzleControls()
+{
+
+	switch (P_TYPE)
+	{
+	case PUZZLE_SLIME: puzzleControls1();
+		break;
+	case PUZZLE_ICE:
+		switch (directionICE)
+		{
+		case D_NONE:
+			moveCharacterICE();		// input for ice movement
+			moveCharacter(); 	    // moves the character, collision detection, physics, etc
+
+		default: slideICE();		// logic for ice movement
+		}
+		break;
+
+	}
+}
+
+void puzzleControls1()
+{
 	COORD c = g_Console.getConsoleSize();
 
 	bool bSomethingHappened = false;
@@ -2405,15 +2333,15 @@ void monsterPuzzle()
 	{
 		puzzle1Input = 0;
 
-		if ((digit1 == NUM_NIL)&&(digit2 == NUM_NIL))
+		if ((d1 == NULL) && (d2 == NULL))
 		{
 			puzzle1Input = 0;
 		}
-		else if ((digit1 != NUM_NIL)&&(digit2 == NUM_NIL))
+		else if ((d1 != NULL) && (d2 == NULL))
 		{
 			puzzle1Input = d1;
 		}
-		else if ((digit1 != NUM_NIL)&&(digit2 != NUM_NIL))
+		else if ((d1 != NULL) && (d2 != NULL))
 		{
 			puzzle1Input = ((d1 * 10) + d2);
 		}
@@ -2421,16 +2349,15 @@ void monsterPuzzle()
 		//now check answer.
 		puzzle1Ans = puzzle1Integer1 * puzzle1Integer2;
 
-		if (puzzle1Input != puzzle1Ans) {	// wrong answer
-			digit1 = NUM_NIL;
-			digit2 = NUM_NIL;
-			d1 = NULL;
-			d2 = NULL;
-		}
+		//	if (puzzle1Input != puzzle1Ans) //wrong ans
+		//		g_eGameState = S_SPLASHSCREEN; //output for now, in future replace with a more suitable sequence.
 
 		if (puzzle1Ans == puzzle1Input) {	// correct answer
 			g_eGameState = S_GAME;
-			puzzle1Integer1 = rand() % 10 + 1;
+			loadData();
+
+
+			puzzle1Integer1 = rand() % 9 + 1;
 			puzzle1Integer2 = rand() % 9 + 1;
 			digit1 = NUM_NIL;
 			digit2 = NUM_NIL;
@@ -2454,3 +2381,279 @@ void monsterPuzzle()
 	}
 
 }
+
+void renderEncounterMonster()
+{
+	renderMonster();
+	COORD c = g_Console.getConsoleSize();
+	c.X = 0;
+	c.Y = 15;
+
+	switch (P_TYPE)
+	{
+	case PUZZLE_SLIME: g_Console.writeToBuffer(c, "--------------------------------------------------------------------------------", 0x02);
+
+		break;
+	default: break;
+	}
+
+	renderMonsterPuzzle();
+	renderPuzzlePosition();
+}
+
+void renderMonster()
+{
+
+	switch (P_TYPE)
+	{
+	case PUZZLE_SLIME: renderMonster1();
+		break;
+	case PUZZLE_ICE: //renderMonster2(); // TO BE ADDED LATER.
+		break;
+	default: return;
+	}
+}
+
+void renderMonster1()
+{
+	COORD c = g_Console.getConsoleSize();
+	// place monsters images here
+	int monsterrng = 1; //change 2 with number of monsters + 1.
+
+	switch (monsterrng) {
+	case 1: { // slime.
+
+		c.X = g_Console.getConsoleSize().X / 2 - 15;
+		c.Y = 0;
+		g_Console.writeToBuffer(c, "           `......`           ", 0x06);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "        -ossoo+++///:-`       ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "      `shhyyss++o+/////.      ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "      ohyyso(----)////:/`     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     `yyyyssssso+++/////-     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     `yyysosyyso+////:-/-     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     `yysoossoo+/:://:-/-     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     :syssooo//+/://:-:::     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   `oo+oyyso+/+////:-.:+/:`   ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   :yys++os+:/++////::/s+:-   ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "    :syyssso++////-..:sy//-   ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "    `syyyso//::///-..-oy+:`   ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     osssss+///++/:://///`    ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "     .+osssso+++/::--//+-     ", 0x02);
+		c.Y += 1;
+		g_Console.writeToBuffer(c, "   ``.---:///:::---..--.      ", 0x02);
+	}
+	default:
+		break;
+	}
+
+}
+
+void renderMonsterPuzzle()
+{
+
+	switch (P_TYPE)
+	{
+	case PUZZLE_SLIME: renderMonsterPuzzle1();
+		break;
+	case PUZZLE_ICE:
+
+		for (int r = 0; r < 25; r++) {
+			for (int c = 0; c < 80; c++) {
+				switch (map[r][c]) {
+				case WALL: g_Console.writeToBuffer(c, r, (char)219, 0x07);
+					break;
+				case ENDPOINT: g_Console.writeToBuffer(c, r, (char)219, 0x05);
+					break;
+				case ICE: g_Console.writeToBuffer(c, r, (char)176, 0x07);
+					break;
+				case KEY: g_Console.writeToBuffer(c, r, (char)229, 0x0A);
+					break;
+				case GATE: g_Console.writeToBuffer(c, r, (char)219, 0x0A);
+					break;
+				case PORTAL: g_Console.writeToBuffer(c, r, char(219), 0x0A);
+
+				}
+
+			}
+		}
+	default:
+		break;
+	}
+
+}
+
+void renderMonsterPuzzle1()
+{
+	// This pretty much handles the logic and visual-side of the puzzles.
+
+	//To add: switch-case for multiple puzzles. For now it's a basic maths puzzle.
+	// What's a x b ?
+	// y=17: qn, y= 19: answer
+
+	COORD c = g_Console.getConsoleSize();
+
+	// Display "What's int1 x int2 ?"
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.Y = 17;
+	g_Console.writeToBuffer(c, "What is ", 0x02);
+	c.X = c.X + 8;
+	g_Console.writeToBuffer(c, to_string(puzzle1Integer1), 0x02);
+	c.X = c.X + 3;
+	g_Console.writeToBuffer(c, "x", 0x02);
+	c.X = c.X + 2;
+	g_Console.writeToBuffer(c, to_string(puzzle1Integer2), 0x02);
+	c.X = c.X + 3;
+	g_Console.writeToBuffer(c, "?", 0x02);
+
+	// Answer portion
+	c.X = g_Console.getConsoleSize().X / 2 - 6;
+	c.Y = 19;
+
+	g_Console.writeToBuffer(c, "Answer: ", 0x02);
+
+	//for answer container; answer will be 2 digits at most.
+
+	c.X = 42;
+	switch (digit1) {
+	case NUM_ZERO:
+	{
+		g_Console.writeToBuffer(c, "0", 0x02);
+		break;
+	}
+	case NUM_ONE:
+	{
+		g_Console.writeToBuffer(c, "1", 0x02);
+		break;
+	}
+	case NUM_TWO:
+	{
+		g_Console.writeToBuffer(c, "2", 0x02);
+		break;
+	}
+	case NUM_THREE:
+	{
+		g_Console.writeToBuffer(c, "3", 0x02);
+		break;
+	}
+	case NUM_FOUR:
+	{
+		g_Console.writeToBuffer(c, "4", 0x02);
+		break;
+	}
+	case NUM_FIVE:
+	{
+		g_Console.writeToBuffer(c, "5", 0x02);
+		break;
+	}
+	case NUM_SIX:
+	{
+		g_Console.writeToBuffer(c, "6", 0x02);
+		break;
+	}
+	case NUM_SEVEN:
+	{
+		g_Console.writeToBuffer(c, "7", 0x02);
+		break;
+	}
+	case NUM_EIGHT:
+	{
+		g_Console.writeToBuffer(c, "8", 0x02);
+		break;
+	}
+	case NUM_NINE:
+	{
+		g_Console.writeToBuffer(c, "9", 0x02);
+		break;
+	}
+	case NUM_NIL:
+	{
+		g_Console.writeToBuffer(c, "_", 0x02);
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+
+	c.X = 44;
+	switch (digit2) {
+	case NUM_ZERO:
+	{
+		g_Console.writeToBuffer(c, "0", 0x02);
+		break;
+	}
+	case NUM_ONE:
+	{
+		g_Console.writeToBuffer(c, "1", 0x02);
+		break;
+	}
+	case NUM_TWO:
+	{
+		g_Console.writeToBuffer(c, "2", 0x02);
+		break;
+	}
+	case NUM_THREE:
+	{
+		g_Console.writeToBuffer(c, "3", 0x02);
+		break;
+	}
+	case NUM_FOUR:
+	{
+		g_Console.writeToBuffer(c, "4", 0x02);
+		break;
+	}
+	case NUM_FIVE:
+	{
+		g_Console.writeToBuffer(c, "5", 0x02);
+		break;
+	}
+	case NUM_SIX:
+	{
+		g_Console.writeToBuffer(c, "6", 0x02);
+		break;
+	}
+	case NUM_SEVEN:
+	{
+		g_Console.writeToBuffer(c, "7", 0x02);
+		break;
+	}
+	case NUM_EIGHT:
+	{
+		g_Console.writeToBuffer(c, "8", 0x02);
+		break;
+	}
+	case NUM_NINE:
+	{
+		g_Console.writeToBuffer(c, "9", 0x02);
+		break;
+	}
+	case NUM_NIL:
+	{
+		g_Console.writeToBuffer(c, "_", 0x02);
+		break;
+	}
+	default:
+	{
+		break;
+	}
+	}
+}
+
+void renderPuzzlePosition() {
+	g_Console.writeToBuffer(g_sChar.m_cLocation, (char)158, charColor);
+}
+	

@@ -9,6 +9,7 @@
 #define ICE 51
 #define KEY 52
 #define GATE 53
+#define PORTAL 54
 #define BOSS_ENGAGE_RANGE_X ((monBOSS.X == g_sChar.m_cLocation.X) || (monBOSS.X + 1 == g_sChar.m_cLocation.X) || (monBOSS.X + 2 == g_sChar.m_cLocation.X)) 
 
 #include "Framework\timer.h"
@@ -112,11 +113,24 @@ enum SLIDE_DIRECTION {
 	D_RIGHT
 };
 
+enum PUZZLE_TYPE {
+	PUZZLE_SLIME,
+	PUZZLE_ICE,
+	PUZZLE_NIL
+};
+
 // struct for the game character
 struct SGameChar
 {
     COORD m_cLocation;
     bool  m_hasKey;
+};
+
+struct lastSavedData
+{
+	int x;
+	int y;
+	ELEVELS savedlevel;
 };
 
 
@@ -164,9 +178,22 @@ void renderWrong();
 void correctScreen();
 void wrongScreen();
 
+void saveData(); // saves coordinates + current level ((before going to puzzle level))
+void loadData(); // loads last saved coordinates + level ((after finishing puzzle))
+
 void renderEncounterMonster();
 void renderMonster();
-void monsterPuzzle();
+void renderMonster1();
 void renderMonsterPuzzle();
+void renderMonsterPuzzle1();
+void renderPuzzlePosition();
+
+void monsterPuzzle();
+void monsterRandomiser();
+void loadPuzzle();
+void puzzlePosition();
+void puzzleControls();
+void puzzleControls1();
+
 #endif // _GAME_H
 
