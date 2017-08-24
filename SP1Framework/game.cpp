@@ -2121,8 +2121,8 @@ void puzzlePosition() {
 			g_sChar.m_cLocation.Y = 0;
 			break;
 		case PUZZLE_ICE:
-			g_sChar.m_cLocation.X = 23;
-			g_sChar.m_cLocation.Y = 3;
+			g_sChar.m_cLocation.X = 50;
+			g_sChar.m_cLocation.Y = 6;
 			break;
 		}
 	}
