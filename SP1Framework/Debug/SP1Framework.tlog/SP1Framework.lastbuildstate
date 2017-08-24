@@ -1,2 +1,6 @@
 #TargetFrameworkVersion=v4.0:PlatformToolSet=v141:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
+<<<<<<< HEAD
 Debug|Win32|C:\Users\cryintiger\Documents\sp2017grp7\|
+=======
+Debug|Win32|D:\Desktop\repos\sp2017grp7\|
+>>>>>>> 5d733954e31587d26be53611708ff169a419fd9c
