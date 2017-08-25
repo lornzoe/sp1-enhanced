@@ -292,17 +292,17 @@ void VolumeScreenSelect()		//buttons for Volume Screen
 
 	if (g_abKeyPressed[K_ONE])
 	{
-
+		waveOutSetVolume(NULL, 0x00FF00FF);
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_TWO])
 	{
-		
+		waveOutSetVolume(NULL, 0x0FAA0FAA);
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_THREE])
 	{
-
+		waveOutSetVolume(NULL, 0xBFFFBFFF);
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_ESCAPE])
