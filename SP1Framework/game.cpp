@@ -1165,15 +1165,16 @@ void renderOptions()
 {
 	COORD c = g_Console.getConsoleSize();
 	c.Y /= 2;
+	c.Y -= 2;
 	c.Y += 1;
-	c.X = c.X / 2 - 8;
+	c.X = c.X / 2 - 10;
 	g_Console.writeToBuffer(c, "1. Character Color", 0x06);
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 5;
 	g_Console.writeToBuffer(c, "2. Volume", 0x06);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 	c.Y += 3;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.X = g_Console.getConsoleSize().X / 2 - 11;
 	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 }
@@ -1186,15 +1187,15 @@ void renderVolume()
 	c.X = c.X / 2 - 8;
 	g_Console.writeToBuffer(c, "1. Low Volume", 0x06);
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.X = g_Console.getConsoleSize().X / 2 - 8;
 	g_Console.writeToBuffer(c, "2. Medium Volume", 0x06);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "2. High Volume", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 8;
+	g_Console.writeToBuffer(c, "3. High Volume", 0x06);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 	c.Y += 3;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	c.X = g_Console.getConsoleSize().X / 2 - 11;
 	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 }
@@ -1203,24 +1204,24 @@ void renderCredits()
 {
 	COORD c = g_Console.getConsoleSize();
 	c.Y /= 2;
-	c.Y += 1;
+	c.Y -= 3;
 	c.X = c.X / 2 - 10;
 	g_Console.writeToBuffer(c, "Team Leader: Rafiq", 0x06);
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 10;
-	g_Console.writeToBuffer(c, "Team member: Lorenzo", 0x06);
+	g_Console.writeToBuffer(c, "Team Member: Lorenzo", 0x06);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 10;
-	g_Console.writeToBuffer(c, "Team member: Tian Yuan", 0x06);
+	g_Console.writeToBuffer(c, "Team Member: Tian Yuan", 0x06);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 10;
-	g_Console.writeToBuffer(c, "Team member: Darius", 0x06);
+	g_Console.writeToBuffer(c, "Team Member: Darius", 0x06);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
-	c.Y += 3;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "<Press Esc to Back>", 0x02);
+	c.Y += 4;
+	c.X = g_Console.getConsoleSize().X / 2 - 11;
+	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 }
 
@@ -2467,15 +2468,15 @@ void puzzleControls1()
 	{
 		puzzle1Input = 0;
 
-		if ((d1 == NULL) && (d2 == NULL))
+		if ((digit1 == NUM_NIL) && (digit2 == NUM_NIL))
 		{
 			puzzle1Input = 0;
 		}
-		else if ((d1 != NULL) && (d2 == NULL))
+		else if ((digit1 != NUM_NIL) && (digit2 == NUM_NIL))
 		{
 			puzzle1Input = d1;
 		}
-		else if ((d1 != NULL) && (d2 != NULL))
+		else if ((digit1 != NUM_NIL) && (digit2 != NUM_NIL))
 		{
 			puzzle1Input = ((d1 * 10) + d2);
 		}
@@ -2489,8 +2490,6 @@ void puzzleControls1()
 		if (puzzle1Ans == puzzle1Input) {	// correct answer
 			g_eGameState = S_GAME;
 			loadData();
-
-
 			puzzle1Integer1 = rand() % 9 + 1;
 			puzzle1Integer2 = rand() % 9 + 1;
 			digit1 = NUM_NIL;
