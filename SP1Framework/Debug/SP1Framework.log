@@ -1,3 +1,10 @@
-﻿  game.cpp
-  SP1Framework.vcxproj -> C:\Users\cryintiger\Documents\sp2017grp7\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> C:\Users\cryintiger\Documents\sp2017grp7\Debug\SP1Framework.pdb (Partial PDB)
+﻿  main.cpp
+  game.cpp
+  timer.cpp
+  console.cpp
+c:\users\ashuu\documents\sp2017grp7\sp1framework\framework\console.cpp(25): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
+c:\users\ashuu\documents\sp2017grp7\sp1framework\framework\console.cpp(110): warning C4838: conversion from 'unsigned short' to 'SHORT' requires a narrowing conversion
+  Generating Code...
+  LINK : C:\Users\Ashuu\Documents\sp2017grp7\Debug\SP1Framework.exe not found or not built by the last incremental link; performing full link
+  SP1Framework.vcxproj -> C:\Users\Ashuu\Documents\sp2017grp7\Debug\SP1Framework.exe
+  SP1Framework.vcxproj -> C:\Users\Ashuu\Documents\sp2017grp7\Debug\SP1Framework.pdb (Partial PDB)
