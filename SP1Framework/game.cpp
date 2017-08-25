@@ -180,6 +180,12 @@ void update(double dt)
             break;
         case S_GAME: gameplay(); // gameplay logic when we are in the game
             break;
+		case S_OPTIONMENU: OptionScreenSelect(); // option screen logic
+			break;
+		case S_VOLUME: VolumeScreenSelect();
+			break;
+		case S_CREDITS:  CreditScreenSelect();
+			break;
 		case S_LEVELSELECT: LevelScreenSelect(); // game logic for the level select screen
 			break;
 		case S_CHARACTERCOLOR: charactercolourselect();
@@ -211,9 +217,15 @@ void render()
     {
         case S_SPLASHSCREEN: renderSplashScreen();
             break;
+		case S_OPTIONMENU: renderOptions();
+			break;
+		case S_VOLUME: renderVolume();
+			break;
         case S_GAME: renderGame();
             break;
 		case S_LEVELSELECT: renderLevelSelect();
+			break;
+		case S_CREDITS: renderCredits();
 			break;
 		case S_LOADGAME: renderSavedFile();
 			break;
@@ -240,7 +252,6 @@ void splashScreenWait() {
 }
 
 
-
 void splashScreenSelect()    // waits for time to pass in splash screen
 {
 	bool bSomethingHappened = false;
@@ -252,14 +263,97 @@ void splashScreenSelect()    // waits for time to pass in splash screen
 		g_eGameState = S_LEVELSELECT;
 		bSomethingHappened = true;
 	}
+	if (g_abKeyPressed[K_TWO])
+	{
+		g_eGameState = S_OPTIONMENU;
+		bSomethingHappened = true;
+	}
 	if (g_abKeyPressed[K_THREE])
 	{
-		g_eGameState = S_CHARACTERCOLOR;
+		g_eGameState = S_CREDITS;
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_ESCAPE])
 	{
 		g_bQuitGame = true;
+	}
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.25;
+	}
+}
+
+void VolumeScreenSelect()		//buttons for Volume Screen
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	if (g_abKeyPressed[K_ONE])
+	{
+
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_TWO])
+	{
+		
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_THREE])
+	{
+
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_eGameState = S_OPTIONMENU;
+		bSomethingHappened = true;
+	}
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.25;
+	}
+}
+
+void OptionScreenSelect()			//Buttons for Options Screen
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	if (g_abKeyPressed[K_ONE])
+	{
+		g_eGameState = S_CHARACTERCOLOR;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_TWO])
+	{
+		g_eGameState = S_VOLUME;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+		bSomethingHappened = true;
+	}
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.25;
+	}
+}
+
+void CreditScreenSelect()
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		g_eGameState = S_SPLASHSCREEN;
+		bSomethingHappened = true;
 	}
 	if (bSomethingHappened)
 	{
@@ -367,7 +461,7 @@ void charactercolourselect() {
 	}
 	if (g_abKeyPressed[K_ESCAPE])
 	{
-		g_eGameState = S_SPLASHSCREEN;
+		g_eGameState = S_OPTIONMENU;
 		bSomethingHappened = true;
 	}
 	if (bSomethingHappened)
@@ -1037,8 +1131,12 @@ void renderSplashScreen()  // renders the splash screen
 	/*c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "2. Continue Game", 0x06);
 	c.Y += 2;*/
-	c.X = g_Console.getConsoleSize().X / 2 - 13;
-	g_Console.writeToBuffer(c, "2. Change Character Colour", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 5;
+	g_Console.writeToBuffer(c, "2. Options", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 5;
+	g_Console.writeToBuffer(c, "3. Credits", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
     c.Y += 3;
     c.X = g_Console.getConsoleSize().X / 2 - 9;
     g_Console.writeToBuffer(c, "<Press Esc to Quit>", 0x02);
@@ -1057,6 +1155,69 @@ void renderSplashScreen()  // renders the splash screen
 	g_Console.writeToBuffer(c, "|   |   ||     ||  |  ||     ||     ||     ||     ||     ||     |", 0x02);
 	c.Y += 1;
 	g_Console.writeToBuffer(c, "|___|___| \\___/ |__|__| \\__,_||_____||_____||_____||_____||_____|", 0x02);
+}
+
+void renderOptions()
+{
+	COORD c = g_Console.getConsoleSize();
+	c.Y /= 2;
+	c.Y += 1;
+	c.X = c.X / 2 - 8;
+	g_Console.writeToBuffer(c, "1. Character Color", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 3;
+	g_Console.writeToBuffer(c, "2. Volume", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+}
+
+void renderVolume()
+{
+	COORD c = g_Console.getConsoleSize();
+	c.Y /= 2;
+	c.Y += 1;
+	c.X = c.X / 2 - 8;
+	g_Console.writeToBuffer(c, "1. Low Volume", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "2. Medium Volume", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "2. High Volume", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+}
+
+void renderCredits()
+{
+	COORD c = g_Console.getConsoleSize();
+	c.Y /= 2;
+	c.Y += 1;
+	c.X = c.X / 2 - 10;
+	g_Console.writeToBuffer(c, "Team Leader: Rafiq", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 10;
+	g_Console.writeToBuffer(c, "Team member: Lorenzo", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 10;
+	g_Console.writeToBuffer(c, "Team member: Tian Yuan", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 10;
+	g_Console.writeToBuffer(c, "Team member: Darius", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "<Press Esc to Back>", 0x02);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
 }
 
 void winscreenRender() {
@@ -1163,7 +1324,7 @@ void renderLevelSelectBG()
 	}
 	c.Y += 3;
 	c.X = g_Console.getConsoleSize().X / 2 - 13;
-	g_Console.writeToBuffer(c, "<Press Esc to go back>", 0x02);
+	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
 }
 
 void renderMap()

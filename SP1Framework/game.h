@@ -50,6 +50,9 @@ enum EGAMESTATES
 	S_SPLASHSCREEN,
 	S_GAME,
 	S_LEVELSELECT,
+	S_OPTIONMENU,
+	S_VOLUME,
+	S_CREDITS,
 	S_LOADGAME,
 	S_CHARACTERCOLOR,
 	S_ENCOUNTERMONSTER,
@@ -170,7 +173,6 @@ MON_NO monsterTABLE();		// random generator for monster on the map
 void loadMap();				// loads text file into array
 void winscreen();			// logic for winscreen
 void winscreenRender();		// renders winscreen
-void resetPos();			// resets position of all entities
 bool isSolid(int x, int y);	// returns false if can move into coordinate and and true if cannot
 void bossEncounter();		// handles logic for boss
 void renderBossEncounter();	// renders boss screen
@@ -178,6 +180,13 @@ void renderCorrect();
 void renderWrong();
 void correctScreen();
 void wrongScreen();
+void OptionScreenSelect(); // logic for keys pressed in option screen
+void VolumeScreenSelect(); // logic for keys pressed in volume screen
+void CreditScreenSelect();
+void renderOptions();	   // Renders the options screen
+void renderVolume();	   // Renders the Volume screen
+void renderCredits();
+
 
 void saveData(); // saves coordinates + current level ((before going to puzzle level))
 void loadData(); // loads last saved coordinates + level ((after finishing puzzle))
