@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 #TargetFrameworkVersion=v4.0:PlatformToolSet=v141:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0.15063.0
 Debug|Win32|C:\Users\Jupiter\Documents\sp2017grp7\|
+=======
+#TargetFrameworkVersion=v4.0:PlatformToolSet=v141:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
+Debug|Win32|D:\Desktop\repos\sp2017grp7\|
+>>>>>>> 3d8973c4e143509d43e2fe616570c07f26238f83
