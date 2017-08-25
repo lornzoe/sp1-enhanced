@@ -1430,7 +1430,7 @@ void monsterALL()				// how the monster is rendered in game
 	g_Console.writeToBuffer(monONE, "\u0444", 0x0C);
 	g_Console.writeToBuffer(monTWO, "\u0444", 0x0C);
 	g_Console.writeToBuffer(monTHREE, "\u0444", 0x0C);
-	g_Console.writeToBuffer(monBOSS, "@-@", 0x0C);
+	g_Console.writeToBuffer(monBOSS, "\u0444", 0x0C);
 }
 
 void Mon_Char_Location()			// logic for the monst location
@@ -2195,15 +2195,18 @@ void monsterRandomiser()
 {
 	if (puzzleChange)
 	{
-		int RNGGOFUCKYOURSELF;
-		RNGGOFUCKYOURSELF = rand() % 2 + 1;
+		int RNG;
+		RNG= rand() % 4 + 1;
 		
-		switch (RNGGOFUCKYOURSELF) {
+		switch (RNG) {
 		case 1:
 			P_TYPE = PUZZLE_SLIME;
 			break;
 		case 2: P_TYPE = PUZZLE_ICE;
 			break;
+		case 3: P_TYPE = PUZZLE_ICE2;
+			break;
+		case 4: P_TYPE = PUZZLE_ICE3;
 		default:
 			break;
 		}
@@ -2222,7 +2225,17 @@ void loadPuzzle() {
 		{
 			switch (P_TYPE) {
 			case PUZZLE_ICE:
-				file.open("PuzzleMap/puzzle1.txt");
+				file.open("PuzzleMap/puzzleICE.txt");
+				PlaySound(TEXT("puzzle.wav"), NULL, SND_ASYNC | SND_LOOP);
+				system("0");
+				break;
+			case PUZZLE_ICE2:
+				file.open("PuzzleMap/puzzleICE2.txt");
+				PlaySound(TEXT("puzzle.wav"), NULL, SND_ASYNC | SND_LOOP);
+				system("0");
+				break;
+			case PUZZLE_ICE3:
+				file.open("PuzzleMap/puzzleICE3.txt");
 				PlaySound(TEXT("puzzle.wav"), NULL, SND_ASYNC | SND_LOOP);
 				system("0");
 				break;
@@ -2257,6 +2270,14 @@ void puzzlePosition() {
 			g_sChar.m_cLocation.X = 50;
 			g_sChar.m_cLocation.Y = 6;
 			break;
+		case PUZZLE_ICE2:
+			g_sChar.m_cLocation.X = 39;
+			g_sChar.m_cLocation.Y = 19;
+			break;
+		case PUZZLE_ICE3:
+			g_sChar.m_cLocation.X = 42;
+			g_sChar.m_cLocation.Y = 1;
+			break;
 		}
 	}
 	puzzleChange = false;
@@ -2270,6 +2291,8 @@ void puzzleControls()
 	case PUZZLE_SLIME: puzzleControls1();
 		break;
 	case PUZZLE_ICE:
+	case PUZZLE_ICE2:
+	case PUZZLE_ICE3:
 		switch (directionICE)
 		{
 		case D_NONE:
@@ -2600,6 +2623,8 @@ void renderMonsterPuzzle()
 	case PUZZLE_SLIME: renderMonsterPuzzle1();
 		break;
 	case PUZZLE_ICE:
+	case PUZZLE_ICE2:
+	case PUZZLE_ICE3:
 
 		for (int r = 0; r < 25; r++) {
 			for (int c = 0; c < 80; c++) {
@@ -2785,6 +2810,6 @@ void renderMonsterPuzzle1()
 }
 
 void renderPuzzlePosition() {
-	g_Console.writeToBuffer(g_sChar.m_cLocation, (char)158, charColor);
+	g_Console.writeToBuffer(g_sChar.m_cLocation, (char)158, charColor); 
 }
 	
