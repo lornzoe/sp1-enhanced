@@ -1,3 +1,6 @@
 ﻿  game.cpp
-  SP1Framework.vcxproj -> C:\Users\Ashuu\Documents\sp2017grp7master\Debug\SP1Framework.exe
-  SP1Framework.vcxproj -> C:\Users\Ashuu\Documents\sp2017grp7master\Debug\SP1Framework.pdb (Partial PDB)
+c:\users\cryintiger\documents\sp2017grp7\sp1framework\game.cpp(1430): warning C4566: character represented by universal-character-name '\u0444' cannot be represented in the current code page (1252)
+c:\users\cryintiger\documents\sp2017grp7\sp1framework\game.cpp(1431): warning C4566: character represented by universal-character-name '\u0444' cannot be represented in the current code page (1252)
+c:\users\cryintiger\documents\sp2017grp7\sp1framework\game.cpp(1432): warning C4566: character represented by universal-character-name '\u0444' cannot be represented in the current code page (1252)
+  SP1Framework.vcxproj -> C:\Users\cryintiger\Documents\sp2017grp7\Debug\SP1Framework.exe
+  SP1Framework.vcxproj -> C:\Users\cryintiger\Documents\sp2017grp7\Debug\SP1Framework.pdb (Partial PDB)

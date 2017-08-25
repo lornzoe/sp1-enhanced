@@ -99,7 +99,7 @@ void init( void )
 	puzzle1Integer1 = rand() % 9 + 1;
 	puzzle1Integer2 = rand() % 9 + 1;
 
-	monsterLocation();
+	Mon_Char_Location();
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -292,7 +292,7 @@ void VolumeScreenSelect()		//buttons for Volume Screen
 
 	if (g_abKeyPressed[K_ONE])
 	{
-		waveOutSetVolume(NULL, 0x00FF00FF);
+		waveOutSetVolume(NULL, 0x05FF05FF);
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_TWO])
@@ -302,7 +302,7 @@ void VolumeScreenSelect()		//buttons for Volume Screen
 	}
 	if (g_abKeyPressed[K_THREE])
 	{
-		waveOutSetVolume(NULL, 0xBFFFBFFF);
+		waveOutSetVolume(NULL, 0x5FFF5FFF);
 		bSomethingHappened = true;
 	}
 	if (g_abKeyPressed[K_ESCAPE])
@@ -371,7 +371,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELONE;
-		monsterLocation();
+		Mon_Char_Location();
 		levelChange = true;
 		bSomethingHappened = true;
 		PlaySound(TEXT("levels1-2.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -381,7 +381,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELTWO;
-		monsterLocation();
+		Mon_Char_Location();
 		levelChange = true;
 		bSomethingHappened = true;
 		PlaySound(TEXT("levels1-2.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -391,7 +391,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELTHREE;
-		monsterLocation();
+		Mon_Char_Location();
 		levelChange = true;
 		bSomethingHappened = true;
 		PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -401,7 +401,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELFOUR;
-		monsterLocation();
+		Mon_Char_Location();
 		levelChange = true;
 		bSomethingHappened = true;
 		PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -411,7 +411,7 @@ void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 	{
 		g_eGameState = S_GAME;
 		g_currentlevel = L_LEVELFIVE;
-		monsterLocation();
+		Mon_Char_Location();
 		levelChange = true;
 		bSomethingHappened = true;
 		PlaySound(TEXT("boss.wav"), NULL, SND_ASYNC | SND_LOOP);
@@ -768,7 +768,7 @@ void processUserInput()
 	{
 		g_eGameState = S_SPLASHSCREEN;
 		
-		monsterLocation();
+		Mon_Char_Location();
 		bSomethingHappened = true;
 	}
 	if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] == ENDPOINT) {
@@ -777,7 +777,7 @@ void processUserInput()
 				g_currentlevel = L_LEVELTWO;
 				levelChange = true;
 				
-				monsterLocation();
+				Mon_Char_Location();
 				levelOneC = true;
 				bSomethingHappened = true;
 				break;
@@ -785,7 +785,7 @@ void processUserInput()
 				g_currentlevel = L_LEVELTHREE;
 				levelChange = true;
 				
-				monsterLocation();
+				Mon_Char_Location();
 				levelTwoC = true;
 				PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
 				system("0");
@@ -795,7 +795,7 @@ void processUserInput()
 				g_currentlevel = L_LEVELFOUR;
 				levelChange = true;
 				
-				monsterLocation();
+				Mon_Char_Location();
 				levelThreeC = true;
 				PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
 				system("0");
@@ -805,7 +805,7 @@ void processUserInput()
 				g_currentlevel = L_LEVELFIVE;
 				levelChange = true;
 				
-				monsterLocation();
+				Mon_Char_Location();
 				levelFourC = true;
 				PlaySound(TEXT("boss.wav"), NULL, SND_ASYNC | SND_LOOP);
 				system("0");
@@ -815,7 +815,7 @@ void processUserInput()
 				g_eGameState = S_WINSCREEN;
 				levelChange = true;
 				
-				monsterLocation();
+				Mon_Char_Location();
 				levelFiveC = true;
 				bSomethingHappened = true;
 				break;
@@ -1184,14 +1184,12 @@ void renderVolume()
 	COORD c = g_Console.getConsoleSize();
 	c.Y /= 2;
 	c.Y += 1;
-	c.X = c.X / 2 - 8;
+	c.X = c.X / 2 - 25;
 	g_Console.writeToBuffer(c, "1. Low Volume", 0x06);
-	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 8;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "2. Medium Volume", 0x06);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
-	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 8;
+	c.X = g_Console.getConsoleSize().X / 2 + 11;
 	g_Console.writeToBuffer(c, "3. High Volume", 0x06);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
 	c.Y += 3;
@@ -1435,7 +1433,7 @@ void monsterALL()				// how the monster is rendered in game
 	g_Console.writeToBuffer(monBOSS, "@-@", 0x0C);
 }
 
-void monsterLocation()			// logic for the monsters location
+void Mon_Char_Location()			// logic for the monst location
 {
 	if (g_currentlevel == L_LEVELONE) {
 		monONE.X = (g_Console.getConsoleSize().X / 2 - 16);
