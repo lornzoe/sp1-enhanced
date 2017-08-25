@@ -10,6 +10,7 @@
 #define KEY 52
 #define GATE 53
 #define PORTAL 54
+#define INVISBLOCKS 55
 #define BOSS_ENGAGE_RANGE_X ((monBOSS.X == g_sChar.m_cLocation.X) || (monBOSS.X + 1 == g_sChar.m_cLocation.X) || (monBOSS.X + 2 == g_sChar.m_cLocation.X)) 
 
 #include "Framework\timer.h"

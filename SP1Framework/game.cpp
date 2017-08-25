@@ -423,6 +423,9 @@ bool isSolid(int x, int y) {
 				return false;
 			}
 			break;
+		case INVISBLOCKS:
+			return true;
+			break;
 		default:
 			return false;
 			break;
@@ -1180,7 +1183,8 @@ void renderMap()
 					break;
 				case GATE: g_Console.writeToBuffer(c, r, (char)219, 0x0A);
 					break;
-
+				case INVISBLOCKS: g_Console.writeToBuffer(c, r, (char)219, 0x00);
+					break;
 			}
 		}
 	}
@@ -1257,7 +1261,7 @@ void renderToScreen()
 }
 
 
-void monsterALL()				// how the monster is seen in game
+void monsterALL()				// how the monster is rendered in game
 {
 	g_Console.writeToBuffer(monONE, "M", 0x0C);
 	g_Console.writeToBuffer(monTWO, "M", 0x0C);
@@ -1350,10 +1354,10 @@ void monsterAI()				// base code for how monster  acts
 	
 	MON_NO MONS_NUM;
 	MONS_NUM = monsterTABLE();
-	COORD MON_ALL;
+	COORD MON_ALL;				// this will be the value which hold a monster's movement
 	
 
-switch (MONS_NUM) {
+switch (MONS_NUM) {				// this takes out the original position of a monster
 	case monsONE:
 	MON_ALL.X = monONE.X;
 	MON_ALL.Y = monONE.Y;
@@ -1371,7 +1375,7 @@ switch (MONS_NUM) {
 	if (monsterSPEED < g_dElapsedTime)
 	{
 		monsterCHASE();
-		//Monsters roaming movements
+		//Monsters roaming movements (checks if the space is a blank space before being able to move)
 			switch (currentMOV) {
 			case MON_NOTHING:
 				monsterCHASE();
@@ -1429,7 +1433,7 @@ switch (MONS_NUM) {
 		
 		
 	
-			if (MONS_NUM == monsONE)
+			if (MONS_NUM == monsONE)		// this puts back the updated positions of the monster
 			{
 				monONE.X = MON_ALL.X;
 				monONE.Y = MON_ALL.Y;
@@ -1452,13 +1456,13 @@ switch (MONS_NUM) {
 
 				return;
 			}
-	// monster speed
+	// monster's speed
 	monsterSPEED = g_dElapsedTime + 0.06;
 
 	}
 }
 
-void monsterCHASE()						// sub-function for monster to chase player
+void monsterCHASE()						// sub-function for monster to chase player (checks for a player being near the monster)
 {
 	MON_NO MONS_NUM;
 	MONS_NUM = monsterTABLE();
@@ -1909,17 +1913,18 @@ void monsterCHASE()						// sub-function for monster to chase player
 				}
 			}
 		}
+		//monster's speed
 		monsterSPEED = g_dElapsedTime + 0.03;
 	}
 }
 
-MON_IDLE monsterIDLEMOV()	// When monster is not near the player
+MON_IDLE monsterIDLEMOV()	// randomiser for monster's movement when monster is not near the player
 {
 	MON_IDLE MON_MOVEMENT = MON_NOTHING;
 
 
 	int monz;
-	monz = rand() % 10000;			//using randomiser
+	monz = rand() % 10000;	
 
 	if (monz <= 1900)
 	{
@@ -1945,7 +1950,7 @@ MON_IDLE monsterIDLEMOV()	// When monster is not near the player
 	return MON_MOVEMENT;
 }
 
-MON_NO monsterTABLE()
+MON_NO monsterTABLE()		//randomiser for which monster gets to move when not chasing player
 {
 	MON_NO MONSTER_NO = monsONE;
 
