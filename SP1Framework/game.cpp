@@ -59,6 +59,9 @@ int d2 = NULL;
 SLIDE_DIRECTION directionICE = D_NONE;
 bool puzzleChange = false;
 PUZZLE_TYPE P_TYPE = PUZZLE_NIL;
+bool timerTrigger;
+double timerStartTime;
+
 
 // Console object
 Console g_Console(80, 25, "Monuzzled");
@@ -76,6 +79,7 @@ void init( void )
 	//seed for randomiser
 	srand((int)time(NULL));
 
+	
     // Set precision for floating point output
     g_dElapsedTime = 0.0;
     g_dBounceTime = 0.0;
@@ -85,6 +89,7 @@ void init( void )
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
 	g_currentlevel = L_LEVELONE;
+	P_TYPE = PUZZLE_NIL;
 	bool levelOneC = false;
 	bool levelTwoC = false;
 	bool levelThreeC = false;
@@ -100,6 +105,8 @@ void init( void )
 	puzzle1Integer2 = rand() % 9 + 1;
 
 	Mon_Char_Location();
+
+	timerTrigger = false;
 
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -200,6 +207,8 @@ void update(double dt)
 			break;
 		case S_WRONG: wrongScreen();
 			break;
+		case S_DEAD: DeadScreen();
+			break;
     }
 }
 //--------------------------------------------------------------
@@ -240,6 +249,8 @@ void render()
 		case S_CORRECT: renderCorrect();
 			break;
 		case S_WRONG: renderWrong();
+			break;
+		case S_DEAD: renderDeadScreen();
 			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
@@ -362,6 +373,53 @@ void CreditScreenSelect()
 	}
 }
 
+void DeadScreen()
+{
+
+
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	if (g_abKeyPressed[K_ENTER])
+	{
+		g_eGameState = S_GAME;
+		switch (g_currentlevel) {
+		case L_LEVELONE:
+			PlaySound(TEXT("levels1-2.wav"), NULL, SND_ASYNC | SND_LOOP);
+			break;
+		case L_LEVELTWO:
+			PlaySound(TEXT("levels1-2.wav"), NULL, SND_ASYNC | SND_LOOP);
+			break;
+		case L_LEVELTHREE:
+			PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
+			break;
+		case L_LEVELFOUR:
+			PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
+			break;
+		case L_LEVELFIVE:
+			PlaySound(TEXT("boss.wav"), NULL, SND_ASYNC | SND_LOOP);
+		}
+		P_TYPE = PUZZLE_NIL;
+		Mon_Char_Location();
+		levelChange = true;
+		bSomethingHappened = true;
+	}
+	if (g_abKeyPressed[K_ESCAPE])
+	{
+		Mon_Char_Location();
+		g_eGameState = S_SPLASHSCREEN;
+		P_TYPE = PUZZLE_NIL;
+		bSomethingHappened = true;
+		// PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
+	}
+	
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.25;
+	}
+}
 void LevelScreenSelect() // LOGIC FOR KEY PRESS in level select
 {
 	bool bSomethingHappened = false;
@@ -767,6 +825,7 @@ void processUserInput()
 	if (g_abKeyPressed[K_ESCAPE])
 	{
 		g_eGameState = S_SPLASHSCREEN;
+		PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
 		
 		Mon_Char_Location();
 		bSomethingHappened = true;
@@ -836,6 +895,7 @@ void processUserInput()
 	{
 		saveData();
 		puzzleChange = true;
+		timerTrigger = true;
 		g_eGameState = S_ENCOUNTERMONSTER;
 		monONE.X = NULL;
 		monONE.Y = NULL;
@@ -844,6 +904,7 @@ void processUserInput()
 	{
 		saveData();
 		puzzleChange = true;
+		timerTrigger = true;
 		g_eGameState = S_ENCOUNTERMONSTER;
 		monTWO.X = NULL;
 		monTWO.Y = NULL;
@@ -852,6 +913,7 @@ void processUserInput()
 	{
 		saveData();
 		puzzleChange = true;
+		timerTrigger = true;
 		g_eGameState = S_ENCOUNTERMONSTER;
 		monTHREE.X = NULL;
 		monTHREE.Y = NULL;
@@ -859,6 +921,7 @@ void processUserInput()
 	if (BOSS_ENGAGE_RANGE_X && monBOSS.Y == g_sChar.m_cLocation.Y)
 	{
 		g_eGameState = S_BOSSENCOUNTER;
+		timerTrigger = true;
 		PlaySound(TEXT("bossfight.wav"), NULL, SND_ASYNC | SND_LOOP);
 		system("0");
 	}
@@ -1250,6 +1313,22 @@ void winscreenRender() {
 	g_Console.writeToBuffer(c, "<Escape> To Quit", 0x06);
 }
 
+void renderDeadScreen()
+{
+	COORD c;
+	c.X = g_Console.getConsoleSize().X / 2 - 30;
+	c.Y = g_Console.getConsoleSize().Y / 2 - 6;
+	g_Console.writeToBuffer(c, "     _         __  ___ ___ __    ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "\\_) / ) / /    ) )  )  )_  ) )   ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, " / (_/ (_/    /_/ _(_ (__ /_/  o ", 0x02);
+	c.Y += 3;
+	g_Console.writeToBuffer(c, "< Press Enter to restart the level. >", 0x02);
+	c.Y += 2;
+	g_Console.writeToBuffer(c, "< Press ESC to return to the main menu. >", 0x02);
+}
+
 void renderGame()
 {
     renderMap();        // renders the map to the buffer first
@@ -1427,10 +1506,10 @@ void renderToScreen()
 
 void monsterALL()				// how the monster is rendered in game
 {
-	g_Console.writeToBuffer(monONE, "\u0444", 0x0C);
-	g_Console.writeToBuffer(monTWO, "\u0444", 0x0C);
-	g_Console.writeToBuffer(monTHREE, "\u0444", 0x0C);
-	g_Console.writeToBuffer(monBOSS, "\u0444", 0x0C);
+	g_Console.writeToBuffer(monONE, "M", 0x0C);
+	g_Console.writeToBuffer(monTWO, "M", 0x0C);
+	g_Console.writeToBuffer(monTHREE, "M", 0x0C);
+	g_Console.writeToBuffer(monBOSS, "@_@", 0x0C);
 }
 
 void Mon_Char_Location()			// logic for the monst location
@@ -2137,6 +2216,31 @@ MON_NO monsterTABLE()		//randomiser for which monster gets to move when not chas
 	return MONSTER_NO;	
 }
 
+void puzzleTimer(double z, int x, int y)
+{
+
+	if (timerTrigger)
+	{
+		timerStartTime = g_dElapsedTime + z;
+		timerTrigger = false;
+	}
+	double timeLeft = timerStartTime - g_dElapsedTime;
+	COORD c;
+	// displays the framerate
+	std::ostringstream timerDisplay;
+	timerDisplay << std::fixed << std::setprecision(3);
+	timerDisplay << "Time left: " << timeLeft;
+	c.X = x;
+	c.Y = y;
+	g_Console.writeToBuffer(c, timerDisplay.str());
+
+	if (timeLeft <= 0)
+	{
+		g_eGameState = S_DEAD;
+		PlaySound(TEXT("dead.wav"), NULL, SND_ASYNC | SND_LOOP);
+	}
+}
+
 void saveData()
 {
 	g_save.savedlevel = g_currentlevel;
@@ -2150,6 +2254,8 @@ void loadData()
 	g_sChar.m_cLocation.X = g_save.x;
 	g_sChar.m_cLocation.Y = g_save.y;
 }
+
+
 //------------------------------------------
 //			SEQUENCE OF EVENTS 
 //------------------------------------------
@@ -2173,6 +2279,7 @@ void monsterPuzzle()
 
 	if (map[g_sChar.m_cLocation.Y][g_sChar.m_cLocation.X] == PORTAL)
 	{
+		P_TYPE = PUZZLE_NIL;
 		g_eGameState = S_GAME;
 		loadData();
 		if (g_currentlevel == L_LEVELONE || g_currentlevel == L_LEVELTWO)	//starts the level's music again after monster puzzle is done
@@ -2545,9 +2652,16 @@ void renderEncounterMonster()
 
 	switch (P_TYPE)
 	{
-	case PUZZLE_SLIME: g_Console.writeToBuffer(c, "--------------------------------------------------------------------------------", 0x02);
-
+	case PUZZLE_SLIME: 
+		g_Console.writeToBuffer(c, "--------------------------------------------------------------------------------", 0x02);
+		puzzleTimer(5, 1, 1);
 		break;
+	case PUZZLE_ICE:
+	case PUZZLE_ICE2:
+	case PUZZLE_ICE3:
+		puzzleTimer(15, 1, 1);
+		break;
+
 	default: break;
 	}
 

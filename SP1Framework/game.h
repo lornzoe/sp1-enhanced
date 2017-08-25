@@ -60,6 +60,7 @@ enum EGAMESTATES
 	S_WINSCREEN,
 	S_WRONG,
 	S_CORRECT,
+	S_DEAD,	
 	S_COUNT
 };
 
@@ -189,20 +190,22 @@ void renderOptions();	   // Renders the options screen
 void renderVolume();	   // Renders the Volume screen
 void renderCredits();
 
-
+void puzzleTimer(double z, int x, int y);
+void DeadScreen();
+void renderDeadScreen();
 void saveData(); // saves coordinates + current level ((before going to puzzle level))
 void loadData(); // loads last saved coordinates + level ((after finishing puzzle))
 
-void renderEncounterMonster();
-void renderMonster();
-void renderMonster1();
-void renderMonsterPuzzle();
-void renderMonsterPuzzle1();
-void renderPuzzlePosition();
+void renderEncounterMonster(); // main sequence to run the visual-side of puzzles
+void renderMonster(); // renders a monster of choice.
+void renderMonster1(); // renders a slime as the monster.
+void renderMonsterPuzzle(); // renders the puzzle picked 
+void renderMonsterPuzzle1(); // renders the maths puzzle, it's a separate function.
+void renderPuzzlePosition(); // renders the character position in the game.
 
-void monsterPuzzle();
-void monsterRandomiser();
-void loadPuzzle();
+void monsterPuzzle(); // main sequence for the logic-side of puzzles
+void monsterRandomiser(); // picks a puzzle using a randomiser. calls once only for every new puzzle.
+void loadPuzzle(); // loads the puzzle into memory. calls once only for every new puzzle.
 void puzzlePosition();
 void puzzleControls();
 void puzzleControls1();
