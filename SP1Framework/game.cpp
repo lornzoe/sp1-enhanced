@@ -1257,56 +1257,6 @@ void renderToScreen()
 }
 
 
-
-
-
-/*
-void monsterONE()
-{
-	MON1_MOV movANI;
-    switch (movANI)
-	{
-	case MON1_DOWN :
-		if (monONE.Y--)
-		{
-			g_Console.writeToBuffer(monONE, " (_^q^_) ", 0x0C);
-		}
-		else 
-		{
-			g_Console.writeToBuffer(monONE, "(^q^)", 0x0C);
-		}
-	case MON1_UP :
-		if (monONE.Y++) 
-		{
-			g_Console.writeToBuffer(monONE, " (-^q^-) ", 0x0C);
-		}
-		else
-		{
-			g_Console.writeToBuffer(monONE, "(^q^)", 0x0C);
-		}
-	case MON1_LEFT:
-		if (monONE.X--)
-		{
-			g_Console.writeToBuffer(monONE, " (_^p^)_ ", 0x0C);
-		}
-		else 
-		{
-			g_Console.writeToBuffer(monONE, " (^q^) ", 0x0C);
-		}
-	case MON1_RIGHT:
-		if (monONE.X++) 
-		{
-			g_Console.writeToBuffer(monONE, " _(^q^_) ", 0x0c);
-		}
-		else 
-		{
-			g_Console.writeToBuffer(monONE, "(^q^)", 0x0C);
-		}
-		}
-	
-	}
-	*/
-
 void monsterALL()				// how the monster is seen in game
 {
 	g_Console.writeToBuffer(monONE, "M", 0x0C);
