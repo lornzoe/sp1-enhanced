@@ -2042,6 +2042,8 @@ void loadPuzzle() {
 			switch (P_TYPE) {
 			case PUZZLE_ICE:
 				file.open("PuzzleMap/puzzle1.txt");
+				PlaySound(TEXT("puzzle.wav"), NULL, SND_ASYNC | SND_LOOP);
+				system("0");
 				break;
 			default: break;
 			}
