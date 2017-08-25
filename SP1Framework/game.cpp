@@ -1533,11 +1533,8 @@ void monsterALL()				// how the monster is rendered in game
 	g_Console.writeToBuffer(monONE, "M", 0x0C);
 	g_Console.writeToBuffer(monTWO, "M", 0x0C);
 	g_Console.writeToBuffer(monTHREE, "M", 0x0C);
-<<<<<<< HEAD
-	g_Console.writeToBuffer(monBOSS, "@_@", 0x0C);
-=======
 	g_Console.writeToBuffer(monBOSS, "BMB", 0x0C);
->>>>>>> 3d8973c4e143509d43e2fe616570c07f26238f83
+
 }
 
 void Mon_Char_Location()			// logic for the monst location
