@@ -1164,10 +1164,25 @@ void renderSplashScreen()  // renders the splash screen
 void renderOptions()
 {
 	COORD c = g_Console.getConsoleSize();
-	c.Y /= 2;
-	c.Y -= 2;
+	c.Y = 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 24;
+	g_Console.writeToBuffer(c, "                 _     _                       ", 0x02);
 	c.Y += 1;
-	c.X = c.X / 2 - 10;
+	g_Console.writeToBuffer(c, "                | |   (_)                      ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "  ___    _ __   | |_   _    ___    _ __    ___ ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, " / _ \\  | '_ \\  | __| | |  / _ \\  | '_ \\  / __|", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "| (_) | | |_) | | |_  | | | (_) | | | | | \\__ \\", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, " \\___/  | .__/   \\__| |_|  \\___/  |_| |_| |___/", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "        | |                                    ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "        |_|                                    ", 0x02);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 10;
 	g_Console.writeToBuffer(c, "1. Character Color", 0x06);
 	c.Y += 2;
 	c.X = g_Console.getConsoleSize().X / 2 - 5;
@@ -1201,23 +1216,35 @@ void renderVolume()
 void renderCredits()
 {
 	COORD c = g_Console.getConsoleSize();
-	c.Y /= 2;
-	c.Y -= 3;
-	c.X = c.X / 2 - 10;
-	g_Console.writeToBuffer(c, "Team Leader: Rafiq", 0x06);
-	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 10;
-	g_Console.writeToBuffer(c, "Team Member: Lorenzo", 0x06);
-	c.X = g_Console.getConsoleSize().X / 2 - 33;
-	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 10;
-	g_Console.writeToBuffer(c, "Team Member: Tian Yuan", 0x06);
-	c.X = g_Console.getConsoleSize().X / 2 - 33;
-	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 10;
-	g_Console.writeToBuffer(c, "Team Member: Darius", 0x06);
-	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y = 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 16;
+	g_Console.writeToBuffer(c, "                   _ _ _       ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "                  | (_) |      ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "  ___ _ __ ___  __| |_| |_ ___ ", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, " / __| '__/ _ \\/ _` | | __/ __|", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "| (__| | |  __/ (_| | | |_\\__ \\", 0x02);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, " \\___|_|  \\___|\\__,_|_|\\__|___/", 0x02);
 	c.Y += 4;
+	c.X = g_Console.getConsoleSize().X / 2 - 10;
+	g_Console.writeToBuffer(c, "Team Leader:  Rafiq", 0x06);
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 - 10;
+	g_Console.writeToBuffer(c, "Team Members: Lorenzo", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 + 4;
+	g_Console.writeToBuffer(c, "Tian Yuan", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 2;
+	c.X = g_Console.getConsoleSize().X / 2 + 4;
+	g_Console.writeToBuffer(c, "Darius", 0x06);
+	c.X = g_Console.getConsoleSize().X / 2 - 33;
+	c.Y += 3;
 	c.X = g_Console.getConsoleSize().X / 2 - 11;
 	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
 	c.X = g_Console.getConsoleSize().X / 2 - 33;
@@ -1290,11 +1317,10 @@ void renderCharacterColour() {
 void renderLevelSelectBG()
 {
 	COORD c = g_Console.getConsoleSize();
-	c.Y = 5;
-	c.X = c.X / 2 - 9;
+	c.Y = 7;
+	c.X = c.X / 2 - 5;
 	g_Console.writeToBuffer(c, "1. Level One", 0x06);
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	if (levelOneC) {
 		g_Console.writeToBuffer(c, "2. Level Two", 0x06);
 	}
@@ -1302,7 +1328,6 @@ void renderLevelSelectBG()
 		g_Console.writeToBuffer(c, "Level Locked", 0x04);
 	}
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	if (levelTwoC) {
 		g_Console.writeToBuffer(c, "3. Level Three", 0x06);
 	}
@@ -1310,7 +1335,6 @@ void renderLevelSelectBG()
 		g_Console.writeToBuffer(c, "Level Locked", 0x04);
 	}
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	if (levelThreeC) {
 		g_Console.writeToBuffer(c, "4. Level Four", 0x06);
 	}
@@ -1318,7 +1342,6 @@ void renderLevelSelectBG()
 		g_Console.writeToBuffer(c, "Level Locked", 0x04);
 	}
 	c.Y += 2;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	if (levelFourC) {
 		g_Console.writeToBuffer(c, "5. Level Five", 0x06);
 	}
@@ -1326,7 +1349,7 @@ void renderLevelSelectBG()
 		g_Console.writeToBuffer(c, "Level Locked", 0x04);
 	}
 	c.Y += 3;
-	c.X = g_Console.getConsoleSize().X / 2 - 13;
+	c.X = g_Console.getConsoleSize().X / 2 - 10;
 	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
 }
 
@@ -1468,15 +1491,15 @@ void Mon_Char_Location()			// logic for the monst location
 	{
 		monONE.X = (g_Console.getConsoleSize().X / 2 - 35);
 		monONE.Y = (g_Console.getConsoleSize().Y / 2 + 7);
-		monTWO.X = (g_Console.getConsoleSize().X / 2 + 31);
-		monTWO.Y = (g_Console.getConsoleSize().Y / 2 + 10);
+		monTWO.X = 60;
+		monTWO.Y = 3;
 		monTHREE.X = (g_Console.getConsoleSize().X / 2 + 8);
 		monTHREE.Y = (g_Console.getConsoleSize().Y / 2 - 1);
 		monBOSS.X = NULL;
 		monBOSS.Y = NULL;
 		//player && key
-		g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 33;
-		g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2 - 10;
+		g_sChar.m_cLocation.X = 7;
+		g_sChar.m_cLocation.Y = 21;
 		g_sChar.m_hasKey = false;
 	}
 	else if (g_currentlevel == L_LEVELFOUR)
@@ -2195,10 +2218,10 @@ void monsterRandomiser()
 {
 	if (puzzleChange)
 	{
-		int RNGGOFUCKYOURSELF;
-		RNGGOFUCKYOURSELF = rand() % 2 + 1;
+		int RNG;
+		RNG = rand() % 2 + 1;
 		
-		switch (RNGGOFUCKYOURSELF) {
+		switch (RNG) {
 		case 1:
 			P_TYPE = PUZZLE_SLIME;
 			break;
