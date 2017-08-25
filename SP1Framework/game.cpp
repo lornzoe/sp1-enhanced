@@ -908,7 +908,8 @@ void correctScreen() {
 
 void wrongScreen() {
 	if (g_abKeyPressed[K_ENTER]) {
-		g_eGameState = S_BOSSENCOUNTER;
+		g_eGameState = S_GAME;
+		Mon_Char_Location();
 	}
 }
 
@@ -1349,7 +1350,7 @@ void renderLevelSelectBG()
 		g_Console.writeToBuffer(c, "Level Locked", 0x04);
 	}
 	c.Y += 3;
-	c.X = g_Console.getConsoleSize().X / 2 - 10;
+	c.X = g_Console.getConsoleSize().X / 2 - 11;
 	g_Console.writeToBuffer(c, "<Press Esc to go Back>", 0x02);
 }
 
@@ -1450,10 +1451,10 @@ void renderToScreen()
 
 void monsterALL()				// how the monster is rendered in game
 {
-	g_Console.writeToBuffer(monONE, "\u0444", 0x0C);
-	g_Console.writeToBuffer(monTWO, "\u0444", 0x0C);
-	g_Console.writeToBuffer(monTHREE, "\u0444", 0x0C);
-	g_Console.writeToBuffer(monBOSS, "\u0444", 0x0C);
+	g_Console.writeToBuffer(monONE, "M", 0x0C);
+	g_Console.writeToBuffer(monTWO, "M", 0x0C);
+	g_Console.writeToBuffer(monTHREE, "M", 0x0C);
+	g_Console.writeToBuffer(monBOSS, "BMB", 0x0C);
 }
 
 void Mon_Char_Location()			// logic for the monst location
@@ -2219,11 +2220,7 @@ void monsterRandomiser()
 	if (puzzleChange)
 	{
 		int RNG;
-<<<<<<< HEAD
-		RNG = rand() % 2 + 1;
-=======
-		RNG= rand() % 4 + 1;
->>>>>>> ff3061399f91dd3d4f93df7b3661662543f7d6f1
+		RNG = rand() % 4 + 1;
 		
 		switch (RNG) {
 		case 1:
