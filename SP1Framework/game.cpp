@@ -2006,6 +2006,18 @@ void monsterPuzzle()
 	{
 		g_eGameState = S_GAME;
 		loadData();
+		if (g_currentlevel == L_LEVELONE || g_currentlevel == L_LEVELTWO)	//starts the level's music again after monster puzzle is done
+		{
+			PlaySound(TEXT("levels1-2.wav"), NULL, SND_ASYNC | SND_LOOP);
+		}
+		else if (g_currentlevel == L_LEVELTHREE || g_currentlevel == L_LEVELFOUR)
+		{
+			PlaySound(TEXT("levels3-4.wav"), NULL, SND_ASYNC | SND_LOOP);
+		}
+		else if (g_currentlevel == L_LEVELFIVE)
+		{
+			PlaySound(TEXT("boss.wav"), NULL, SND_ASYNC | SND_LOOP);
+		}
 		levelChange = true;
 	}
 }
