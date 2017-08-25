@@ -382,6 +382,7 @@ void winscreen() {
 		g_bQuitGame = true; // exit game
 	}else if (g_abKeyPressed[K_ENTER]) {
 		g_eGameState = S_SPLASHSCREEN; // reset game
+		PlaySound(TEXT("mainmenu.wav"), NULL, SND_ASYNC | SND_LOOP);
 	}
 }
 
@@ -764,6 +765,8 @@ void processUserInput()
 	if (BOSS_ENGAGE_RANGE_X && monBOSS.Y == g_sChar.m_cLocation.Y)
 	{
 		g_eGameState = S_BOSSENCOUNTER;
+		PlaySound(TEXT("bossfight.wav"), NULL, SND_ASYNC | SND_LOOP);
+		system("0");
 	}
 
 	if (bSomethingHappened)
@@ -805,6 +808,7 @@ void bossEncounter() {
 void correctScreen() {
 	if (g_abKeyPressed[K_ENTER]) {
 		g_eGameState = S_GAME;
+		PlaySound(TEXT("boss.wav"), NULL, SND_ASYNC | SND_LOOP);
 	}
 }
 
@@ -1263,10 +1267,10 @@ void renderToScreen()
 
 void monsterALL()				// how the monster is rendered in game
 {
-	g_Console.writeToBuffer(monONE, "M", 0x0C);
-	g_Console.writeToBuffer(monTWO, "M", 0x0C);
-	g_Console.writeToBuffer(monTHREE, "M", 0x0C);
-	g_Console.writeToBuffer(monBOSS, "@M@", 0x0C);
+	g_Console.writeToBuffer(monONE, "\u0444", 0x0C);
+	g_Console.writeToBuffer(monTWO, "\u0444", 0x0C);
+	g_Console.writeToBuffer(monTHREE, "\u0444", 0x0C);
+	g_Console.writeToBuffer(monBOSS, "@-@", 0x0C);
 }
 
 void monsterLocation()			// logic for the monsters location
